@@ -5,23 +5,21 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
       const checkboxGroup = document.getElementById('checkboxGroup');
       data.features.forEach(feature => {
-        const checkboxWrapper = document.createElement('div');
-        checkboxWrapper.className = 'checkbox-wrapper-5';
-        checkboxWrapper.innerHTML = `
-          <div class="checkbox-wrapper-2">
-            <div class="check">
+        const checkboxRow = document.createElement('div');
+        checkboxRow.className = 'popup_row';
+        checkboxRow.innerHTML = `
+            <div class="popup_checkbox">
               <input id="${feature.id}" type="checkbox" value="${feature.value}">
               <label for="${feature.id}"></label>
             </div>
-            <div class="label-pin">
-              <label for="${feature.id}" class="label">${feature.label}</label>
-              <button type="button" class="pin-btn" data-feature-id="${feature.id}">
-                <span class="pin-emoji">📌</span>
+            <div class="popup_pin-container">
+              <label for="${feature.id}">${feature.label}</label>
+              <button type="button" class="popup_pin-button" data-feature-id="${feature.id}">
+                <span class="popup_pin-emoji">📌</span>
               </button>
-            </div>
           </div>
         `;
-        checkboxGroup.appendChild(checkboxWrapper);
+        checkboxGroup.appendChild(checkboxRow);
       });
 
       // Initialize checkboxes and other interactions
@@ -57,8 +55,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
       pinnedItems.forEach(function (featureId) {
-        const featureElement = document.querySelector(`#${featureId}`).closest(".checkbox-wrapper-5");
-        featureElement.classList.add("pinned");
+        const featureElement = document.querySelector(`#${featureId}`).closest(".popup_row");
+        featureElement.classList.add("popup_row__pinned");
         checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
       });
 
@@ -77,15 +75,15 @@ document.addEventListener('DOMContentLoaded', function () {
           pinButton = e.target.parentElement;
         }
 
-        if (pinButton.classList.contains("pin-btn")) {
+        if (pinButton.classList.contains("popup_pin-button")) {
           const featureId = pinButton.getAttribute("data-feature-id");
-          const featureElement = document.querySelector(`input#${featureId}`).closest(".checkbox-wrapper-5");
+          const featureElement = document.querySelector(`input#${featureId}`).closest(".popup_row");
 
-          if (featureElement.classList.contains("pinned")) {
-            featureElement.classList.remove("pinned");
+          if (featureElement.classList.contains("popup_row__pinned")) {
+            featureElement.classList.remove("popup_row__pinned");
             removePinnedItem(featureId);
           } else {
-            featureElement.classList.add("pinned");
+            featureElement.classList.add("popup_row__pinned");
             checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
             addPinnedItem(featureId);
           }

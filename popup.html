@@ -3,23 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>Feature Flags</title>
-  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="app.css">
   <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
 </head>
 <body>
-  <div class="container">
+  <div class="popup">
     <form id="url-form">
-
-    <div class="header">
-      <div class="toggle-all-container">
-        <button id="toggle-all" type="button">></button>
+      <div class="popup_header">
+        <div class="popup_toggle-all-container">
+          <button id="toggle-all" class="popup_toggle-all-button" type="button">
+            >
+          </button>
+        </div>
+        <h1 class="popup_title">Feature Flags</h1>
       </div>
-      <h1 class="title">Feature Flags</h1>
-    </div>
-      <div class="checkbox_group" id="checkboxGroup"></div>        
-      <button class="apply-button">
-        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Apply Flags
-      </button>
+        <div class="popup_checkbox-group" id="checkboxGroup">
+          <!-- handlebars code from js -->
+        </div>        
+        <button class="popup_apply-button">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Apply Flags
+        </button>
     </form>
   <script src="popup.js"></script>
 </body>
