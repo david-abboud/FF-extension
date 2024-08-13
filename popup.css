@@ -59,7 +59,7 @@
 .popup_checkbox-group {
   margin-bottom: 20px;
   overflow-y: scroll;
-  height: 180px;
+  height: 300px;
 }
 
 .popup_pin-container {
@@ -76,7 +76,7 @@
 }
 
 .popup_apply-button {
-  padding: 16px 24px 16px 28px;
+  padding: 8px 16px 8px 20px;
 }
 
 .popup_row {
