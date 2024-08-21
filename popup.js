@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let url = new URL(tab.url);
         let params = url.searchParams;
+        
         let features = params.get('features');
         if (features) {
           let featureList = features.split(',');

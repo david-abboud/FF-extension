@@ -10,14 +10,14 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 100px;
+  margin-bottom: 120px;
   margin-top: 50px;
 }
 
 .popup_toggle-all-container {
   text-align: left;
   margin-right: auto;
-  margin-left: 18px;
+  margin-left: 10px;
 }
 
 .popup_toggle-all-button {
@@ -28,7 +28,7 @@
   width: 1px;
   font-size: 10px;
   margin-right: 5px;
-  padding: 10px 14px 10px 16px;
+  padding: 12px 18px 12px 20px;
 }
 
 .popup_pin-button{
@@ -39,7 +39,7 @@
   width: 1px;
   font-size: 10px;
   margin-right: 5px;
-  padding: 16px 24px 16px 28px;
+  padding: 14px 22px;
 }
 
 .popup_row__pinned {
@@ -187,18 +187,19 @@
   position: relative;
   height: 20px; /* Reduced height */
   width: 100%;
+  margin-right: 15px;
   padding: 0;
 }
 
 .popup_search-field {
   height: 20px; /* Reduced height */
-  font-size: 10px; /* Reduced font size */
+  font-size: 12px; /* Reduced font size */
   display: inline-block;
   font-family: "Lato";
   font-weight: 100;
   border: none;
   outline: none;
-  color: #555;
+  color: #f19af3; /* cursor color */
   padding: 2px; /* Reduced padding */
   padding-right: 50px; /* Adjusted padding-right */
   width: 0px;
