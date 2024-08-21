@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Fetch the JSON data and dynamically create the checkboxes
   fetch('features.json')
     .then(response => response.json())
     .then(data => {
@@ -105,6 +104,21 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   }
+
+  // Add the search functionality
+  const searchInput = document.getElementById('search');
+  searchInput.addEventListener('input', function () {
+    const searchTerm = this.value.toLowerCase();
+    const features = document.querySelectorAll('.popup_row');
+    features.forEach(function (feature) {
+      const label = feature.innerText;
+      if (label.includes(searchTerm)) {
+        feature.style.display = 'flex'; // Show matching features
+      } else {
+        feature.style.display = 'none'; // Hide non-matching features
+      }
+    });
+  });
 });
 
 document.getElementById('url-form').addEventListener('submit', function (event) {
@@ -112,10 +126,8 @@ document.getElementById('url-form').addEventListener('submit', function (event) 
 
   const selectedOptions = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
     .map(checkbox => checkbox.value);
-  console.log('Selected options:', selectedOptions);
 
   const featureFlags = selectedOptions.join(',');
-  console.log('Feature flags to append:', featureFlags);
 
   if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.query) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {

@@ -8,14 +8,18 @@
 </head>
 <body>
   <div class="popup">
-    <form id="url-form">
+    <form id="url-form" style="height: 450px;">
       <div class="popup_header">
+        <h1 class="popup_title">Feature Flags</h1>
         <div class="popup_toggle-all-container">
           <button id="toggle-all" class="popup_toggle-all-button" type="button">
             >
           </button>
         </div>
-        <h1 class="popup_title">Feature Flags</h1>
+        <div id="popup_search-container">
+          <input class="popup_search-field" id="search" name="search" placeholder="What're we looking for ?">
+          <input class="popup_search-icon" id="search_submit" value="Rechercher" type="submit">
+        </div>
       </div>
         <div class="popup_checkbox-group" id="checkboxGroup">
           <!-- handlebars code from js -->
