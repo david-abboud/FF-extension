@@ -35,18 +35,25 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
 
+        // Read feature flags from URL
+        const url = new URL(tab.url);
+        const urlFeatures = url.searchParams.get('features');
+        const urlFeatureList = urlFeatures ? urlFeatures.split(',') : [];
+
         // Load stored feature flags
         chrome.storage.local.get(tab.id.toString(), function(result) {
           const storedFlags = result[tab.id.toString()];
-          if (storedFlags) {
-            let featureList = storedFlags.split(',');
-            featureList.forEach(feature => {
-              let checkbox = document.querySelector(`input[value="${feature}"]`);
-              if (checkbox) {
-                checkbox.checked = true;
-              }
-            });
-          }
+          const storedFeatureList = storedFlags ? storedFlags.split(',') : [];
+
+          // Combine URL features and stored features
+          const allFeatures = new Set([...urlFeatureList, ...storedFeatureList]);
+
+          allFeatures.forEach(feature => {
+            let checkbox = document.querySelector(`input[value="${feature}"]`);
+            if (checkbox) {
+              checkbox.checked = true;
+            }
+          });
         });
 
         const checkboxGroup = document.getElementById("checkboxGroup");
