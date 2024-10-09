@@ -7,15 +7,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const checkboxRow = document.createElement('div');
         checkboxRow.className = 'popup_row';
         checkboxRow.innerHTML = `
-            <div class="popup_checkbox">
-              <input id="${feature.id}" type="checkbox" value="${feature.value}">
-              <label for="${feature.id}"></label>
-            </div>
-            <div class="popup_pin-container">
-              <label for="${feature.id}">${feature.label}</label>
-              <button type="button" class="popup_pin-button" data-feature-id="${feature.id}">
-                <span class="popup_pin-emoji">📌</span>
-              </button>
+          <div class="popup_checkbox">
+            <input id="${feature.id}" type="checkbox" value="${feature.value}">
+            <label for="${feature.id}"></label>
+          </div>
+          <div class="popup_pin-container">
+            <label for="${feature.id}">${feature.label}</label>
+            <button type="button" class="popup_pin-button" data-feature-id="${feature.id}">
+              <span class="popup_pin-emoji">📌</span>
+            </button>
           </div>
         `;
         checkboxGroup.appendChild(checkboxRow);
@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch(error => console.error('Error loading features:', error));
 
   function initCheckboxes() {
-    // Ensure the chrome.tabs API is available
     if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.query) {
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         const tab = tabs[0];
@@ -36,74 +35,74 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
 
-        let url = new URL(tab.url);
-        let params = url.searchParams;
-        
-        let features = params.get('features');
-        if (features) {
-          let featureList = features.split(',');
-          featureList.forEach(feature => {
-            let checkbox = document.querySelector(`input[value="${feature}"]`);
-            if (checkbox) {
-              checkbox.checked = true;
-            }
+        // Load stored feature flags
+        chrome.storage.local.get(tab.id.toString(), function(result) {
+          const storedFlags = result[tab.id.toString()];
+          if (storedFlags) {
+            let featureList = storedFlags.split(',');
+            featureList.forEach(feature => {
+              let checkbox = document.querySelector(`input[value="${feature}"]`);
+              if (checkbox) {
+                checkbox.checked = true;
+              }
+            });
+          }
+        });
+
+        const checkboxGroup = document.getElementById("checkboxGroup");
+
+        const pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
+        pinnedItems.forEach(function (featureId) {
+          const featureElement = document.querySelector(`#${featureId}`).closest(".popup_row");
+          featureElement.classList.add("popup_row__pinned");
+          checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
+        });
+
+        const toggleAllButton = document.getElementById('toggle-all');
+        toggleAllButton.addEventListener('click', function () {
+          const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+          const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+          checkboxes.forEach(checkbox => {
+            checkbox.checked = !allChecked;
           });
-        }
-      });
+        });
 
-      const checkboxGroup = document.getElementById("checkboxGroup");
+        checkboxGroup.addEventListener("click", function (e) {
+          let pinButton = e.target;
+          if (e.target.tagName === 'SPAN') {
+            pinButton = e.target.parentElement;
+          }
 
-      const pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
-      pinnedItems.forEach(function (featureId) {
-        const featureElement = document.querySelector(`#${featureId}`).closest(".popup_row");
-        featureElement.classList.add("popup_row__pinned");
-        checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
-      });
+          if (pinButton.classList.contains("popup_pin-button")) {
+            const featureId = pinButton.getAttribute("data-feature-id");
+            const featureElement = document.querySelector(`input#${featureId}`).closest(".popup_row");
 
-      const toggleAllButton = document.getElementById('toggle-all');
-      toggleAllButton.addEventListener('click', function () {
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-        checkboxes.forEach(checkbox => {
-          checkbox.checked = !allChecked;
+            if (featureElement.classList.contains("popup_row__pinned")) {
+              featureElement.classList.remove("popup_row__pinned");
+              removePinnedItem(featureId);
+            } else {
+              featureElement.classList.add("popup_row__pinned");
+              checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
+              addPinnedItem(featureId);
+            }
+          }
         });
       });
-
-      checkboxGroup.addEventListener("click", function (e) {
-        let pinButton = e.target;
-        if (e.target.tagName === 'SPAN') {
-          pinButton = e.target.parentElement;
-        }
-
-        if (pinButton.classList.contains("popup_pin-button")) {
-          const featureId = pinButton.getAttribute("data-feature-id");
-          const featureElement = document.querySelector(`input#${featureId}`).closest(".popup_row");
-
-          if (featureElement.classList.contains("popup_row__pinned")) {
-            featureElement.classList.remove("popup_row__pinned");
-            removePinnedItem(featureId);
-          } else {
-            featureElement.classList.add("popup_row__pinned");
-            checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
-            addPinnedItem(featureId);
-          }
-        }
-      });
-
-      function addPinnedItem(featureId) {
-        let pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
-        if (!pinnedItems.includes(featureId)) {
-          pinnedItems.push(featureId);
-        }
-        localStorage.setItem("pinnedItems", JSON.stringify(pinnedItems));
-      }
-
-      function removePinnedItem(featureId) {
-        let pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
-        pinnedItems = pinnedItems.filter(item => item !== featureId);
-        localStorage.setItem("pinnedItems", JSON.stringify(pinnedItems));
-      }
     }
+  }
+
+  function addPinnedItem(featureId) {
+    let pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
+    if (!pinnedItems.includes(featureId)) {
+      pinnedItems.push(featureId);
+    }
+    localStorage.setItem("pinnedItems", JSON.stringify(pinnedItems));
+  }
+
+  function removePinnedItem(featureId) {
+    let pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
+    pinnedItems = pinnedItems.filter(item => item !== featureId);
+    localStorage.setItem("pinnedItems", JSON.stringify(pinnedItems));
   }
 
   // Add the search functionality
@@ -113,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const features = document.querySelectorAll('.popup_row');
     features.forEach(function (feature) {
       const label = feature.innerText;
-      if (label.includes(searchTerm)) {
+      if (label.toLowerCase().includes(searchTerm)) {
         feature.style.display = 'flex'; // Show matching features
       } else {
         feature.style.display = 'none'; // Hide non-matching features
@@ -122,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Event listener for submitting the form
 document.getElementById('url-form').addEventListener('submit', function (event) {
   event.preventDefault();
 
@@ -138,6 +138,12 @@ document.getElementById('url-form').addEventListener('submit', function (event) 
         return;
       }
 
+      // Store the feature flags in local storage for persistence
+      chrome.storage.local.set({ [tab.id.toString()]: featureFlags }, function() {
+        console.log('Stored Flags for Tab:', tab.id, featureFlags);
+      });
+
+      // Update the URL with the new feature flags
       let newUrl = new URL(tab.url);
       let params = newUrl.searchParams;
 
@@ -145,16 +151,6 @@ document.getElementById('url-form').addEventListener('submit', function (event) 
         params.set('features', featureFlags);
       } else {
         params.delete('features');
-      }
-
-      let paramsString = params.toString();
-
-      if (paramsString === "") {
-        // No other options after "?" -> remove the whole "?"
-        newUrl.search = "";
-      } else {
-        // Remove "features=" if it’s the only parameter
-        newUrl.search = paramsString.replace(/&?features=$/, '');
       }
 
       chrome.tabs.update(tab.id, { url: newUrl.toString() });
