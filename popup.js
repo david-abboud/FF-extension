@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
         checkboxRow.className = 'popup_row';
         checkboxRow.innerHTML = `
           <div class="popup_checkbox">
-            <input id="${feature.id}" type="checkbox" value="${feature.value}">
+            <input id="${feature.id}" type="checkbox" value="${feature.value}" data-type="${feature.type}">
             <label for="${feature.id}"></label>
           </div>
           <div class="popup_pin-container">
@@ -44,12 +44,22 @@ document.addEventListener('DOMContentLoaded', function () {
       const urlFeatures = url.searchParams.get('features')?.split(',') || [];
       
       chrome.storage.local.get(tab.id.toString(), function(result) {
-        const storedFeatures = result[tab.id.toString()]?.split(',') || [];
-        const allFeatures = new Set([...urlFeatures, ...storedFeatures]);
+        const storedData = result[tab.id.toString()] || {};
+        const storedLocalFeatures = storedData.localFeatureFlags?.split(',') || [];
+        const storedProj05Features = Object.keys(storedData.proj05FeatureFlags || {});
+        
+        const allFeatures = new Set([...urlFeatures, ...storedLocalFeatures, ...storedProj05Features]);
 
         allFeatures.forEach(feature => {
           const checkbox = document.querySelector(`input[value="${feature}"]`);
           if (checkbox) checkbox.checked = true;
+        });
+
+        // Check proj05 features in the URL
+        document.querySelectorAll('input[data-type="proj05"]').forEach(checkbox => {
+          if (url.searchParams.get(checkbox.value) === 'true') {
+            checkbox.checked = true;
+          }
         });
       });
 
@@ -123,9 +133,22 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault();
 
     const selectedOptions = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-      .map(checkbox => checkbox.value);
+      .map(checkbox => ({
+        value: checkbox.value,
+        type: checkbox.dataset.type
+      }));
 
-    const featureFlags = selectedOptions.join(',');
+    const localFeatureFlags = selectedOptions
+      .filter(option => option.type === 'local')
+      .map(option => option.value)
+      .join(',');
+
+    const proj05FeatureFlags = selectedOptions
+      .filter(option => option.type === 'proj05')
+      .reduce((acc, option) => {
+        acc[option.value] = true;
+        return acc;
+      }, {});
 
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tab = tabs[0];
@@ -135,17 +158,34 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       // Store the feature flags in local storage
-      chrome.storage.local.set({ [tab.id.toString()]: featureFlags }, function() {
-        console.log('Stored Flags for Tab:', tab.id, featureFlags);
+      chrome.storage.local.set({
+        [tab.id.toString()]: {
+          localFeatureFlags,
+          proj05FeatureFlags
+        }
+      }, function() {
+        console.log('Stored Flags for Tab:', tab.id, { localFeatureFlags, proj05FeatureFlags });
       });
 
       // Update the URL with the new feature flags
       let newUrl = new URL(tab.url);
-      if (featureFlags) {
-        newUrl.searchParams.set('features', featureFlags);
+      if (localFeatureFlags) {
+        newUrl.searchParams.set('features', localFeatureFlags);
       } else {
         newUrl.searchParams.delete('features');
       }
+
+      // Add proj05 feature flags
+      Object.keys(proj05FeatureFlags).forEach(flag => {
+        newUrl.searchParams.set(flag, 'true');
+      });
+
+      // Remove any proj05 flags that are no longer active
+      document.querySelectorAll('input[data-type="proj05"]').forEach(checkbox => {
+        if (!checkbox.checked) {
+          newUrl.searchParams.delete(checkbox.value);
+        }
+      });
 
       chrome.tabs.update(tab.id, { url: newUrl.toString() });
     });
