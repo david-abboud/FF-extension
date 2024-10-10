@@ -27,75 +27,72 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch(error => console.error('Error loading features:', error));
 
   function initCheckboxes() {
-    if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.query) {
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        const tab = tabs[0];
-        if (!tab || !tab.url) {
-          console.error('No active tab or URL found.');
-          return;
-        }
+    if (typeof chrome === "undefined" || !chrome.tabs || !chrome.tabs.query) {
+      console.error('Chrome extension environment not available.');
+      return;
+    }
 
-        // Read feature flags from URL
-        const url = new URL(tab.url);
-        const urlFeatures = url.searchParams.get('features');
-        const urlFeatureList = urlFeatures ? urlFeatures.split(',') : [];
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const tab = tabs[0];
+      if (!tab || !tab.url) {
+        console.error('No active tab or URL found.');
+        return;
+      }
 
-        // Load stored feature flags
-        chrome.storage.local.get(tab.id.toString(), function(result) {
-          const storedFlags = result[tab.id.toString()];
-          const storedFeatureList = storedFlags ? storedFlags.split(',') : [];
+      // Combine URL features and stored features
+      const url = new URL(tab.url);
+      const urlFeatures = url.searchParams.get('features')?.split(',') || [];
+      
+      chrome.storage.local.get(tab.id.toString(), function(result) {
+        const storedFeatures = result[tab.id.toString()]?.split(',') || [];
+        const allFeatures = new Set([...urlFeatures, ...storedFeatures]);
 
-          // Combine URL features and stored features
-          const allFeatures = new Set([...urlFeatureList, ...storedFeatureList]);
-
-          allFeatures.forEach(feature => {
-            let checkbox = document.querySelector(`input[value="${feature}"]`);
-            if (checkbox) {
-              checkbox.checked = true;
-            }
-          });
-        });
-
-        const checkboxGroup = document.getElementById("checkboxGroup");
-
-        const pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
-        pinnedItems.forEach(function (featureId) {
-          const featureElement = document.querySelector(`#${featureId}`).closest(".popup_row");
-          featureElement.classList.add("popup_row__pinned");
-          checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
-        });
-
-        const toggleAllButton = document.getElementById('toggle-all');
-        toggleAllButton.addEventListener('click', function () {
-          const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-          const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-          checkboxes.forEach(checkbox => {
-            checkbox.checked = !allChecked;
-          });
-        });
-
-        checkboxGroup.addEventListener("click", function (e) {
-          let pinButton = e.target;
-          if (e.target.tagName === 'SPAN') {
-            pinButton = e.target.parentElement;
-          }
-
-          if (pinButton.classList.contains("popup_pin-button")) {
-            const featureId = pinButton.getAttribute("data-feature-id");
-            const featureElement = document.querySelector(`input#${featureId}`).closest(".popup_row");
-
-            if (featureElement.classList.contains("popup_row__pinned")) {
-              featureElement.classList.remove("popup_row__pinned");
-              removePinnedItem(featureId);
-            } else {
-              featureElement.classList.add("popup_row__pinned");
-              checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
-              addPinnedItem(featureId);
-            }
-          }
+        allFeatures.forEach(feature => {
+          const checkbox = document.querySelector(`input[value="${feature}"]`);
+          if (checkbox) checkbox.checked = true;
         });
       });
-    }
+
+      setupPinnedItems();
+      setupToggleAllButton();
+      setupPinButtonListeners();
+    });
+  }
+
+  function setupPinnedItems() {
+    const checkboxGroup = document.getElementById("checkboxGroup");
+    const pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
+    pinnedItems.forEach(function (featureId) {
+      const featureElement = document.querySelector(`#${featureId}`).closest(".popup_row");
+      featureElement.classList.add("popup_row__pinned");
+      checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
+    });
+  }
+
+  function setupToggleAllButton() {
+    document.getElementById('toggle-all').addEventListener('click', function () {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+      checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
+    });
+  }
+
+  function setupPinButtonListeners() {
+    document.getElementById("checkboxGroup").addEventListener("click", function (e) {
+      const pinButton = e.target.closest(".popup_pin-button");
+      if (!pinButton) return;
+
+      const featureId = pinButton.getAttribute("data-feature-id");
+      const featureElement = document.querySelector(`input#${featureId}`).closest(".popup_row");
+      const isPinned = featureElement.classList.toggle("popup_row__pinned");
+
+      if (isPinned) {
+        this.insertBefore(featureElement, this.firstChild);
+        addPinnedItem(featureId);
+      } else {
+        removePinnedItem(featureId);
+      }
+    });
   }
 
   function addPinnedItem(featureId) {
@@ -116,28 +113,20 @@ document.addEventListener('DOMContentLoaded', function () {
   const searchInput = document.getElementById('search');
   searchInput.addEventListener('input', function () {
     const searchTerm = this.value.toLowerCase();
-    const features = document.querySelectorAll('.popup_row');
-    features.forEach(function (feature) {
-      const label = feature.innerText;
-      if (label.toLowerCase().includes(searchTerm)) {
-        feature.style.display = 'flex'; // Show matching features
-      } else {
-        feature.style.display = 'none'; // Hide non-matching features
-      }
+    document.querySelectorAll('.popup_row').forEach(function (feature) {
+      feature.style.display = feature.innerText.toLowerCase().includes(searchTerm) ? 'flex' : 'none';
     });
   });
-});
 
-// Event listener for submitting the form
-document.getElementById('url-form').addEventListener('submit', function (event) {
-  event.preventDefault();
+  // Event listener for submitting the form
+  document.getElementById('url-form').addEventListener('submit', function (event) {
+    event.preventDefault();
 
-  const selectedOptions = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-    .map(checkbox => checkbox.value);
+    const selectedOptions = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+      .map(checkbox => checkbox.value);
 
-  const featureFlags = selectedOptions.join(',');
+    const featureFlags = selectedOptions.join(',');
 
-  if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.query) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tab = tabs[0];
       if (!tab || !tab.url) {
@@ -145,24 +134,20 @@ document.getElementById('url-form').addEventListener('submit', function (event) 
         return;
       }
 
-      // Store the feature flags in local storage for persistence
+      // Store the feature flags in local storage
       chrome.storage.local.set({ [tab.id.toString()]: featureFlags }, function() {
         console.log('Stored Flags for Tab:', tab.id, featureFlags);
       });
 
       // Update the URL with the new feature flags
       let newUrl = new URL(tab.url);
-      let params = newUrl.searchParams;
-
       if (featureFlags) {
-        params.set('features', featureFlags);
+        newUrl.searchParams.set('features', featureFlags);
       } else {
-        params.delete('features');
+        newUrl.searchParams.delete('features');
       }
 
       chrome.tabs.update(tab.id, { url: newUrl.toString() });
     });
-  } else {
-    console.error('Chrome extension environment not available.');
-  }
+  });
 });
