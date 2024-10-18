@@ -1,0 +1,228 @@
+{
+  "version": "38.0.1",
+  "artifacts": {
+    "FeatureFlagsApiStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "FeatureFlagsApiStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "FeatureFlagsApiStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://550475323052/us-west-2",
+      "properties": {
+        "templateFile": "FeatureFlagsApiStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "notificationArns": [],
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::550475323052:role/cdk-hnb659fds-deploy-role-550475323052-us-west-2",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::550475323052:role/cdk-hnb659fds-cfn-exec-role-550475323052-us-west-2",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-550475323052-us-west-2/10d6153e87134c98a6d8c5de80b1398df06ea88365d088713c21e248aa99b934.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "FeatureFlagsApiStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::550475323052:role/cdk-hnb659fds-lookup-role-550475323052-us-west-2",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "FeatureFlagsApiStack.assets"
+      ],
+      "metadata": {
+        "/FeatureFlagsApiStack/FeatureFlagsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsTable00AD5587"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsFunctionServiceRoleF2785A5D"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsFunctionServiceRoleDefaultPolicyDFF25743"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsFunction742178EA"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApi3608D08C"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApiDeployment386FE639e7cfa992e6c2cdad66d6d933581b67f4"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApiDeploymentStageprod23102E7A"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApiEndpoint19756D0E"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApiOPTIONS3BA8A080"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsE9B1D447"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsOPTIONSB988BE2A"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/GET/ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsGETApiPermissionFeatureFlagsApiStackFeatureFlagsApiDF138C37GETfeatureflags126B5BF5"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/GET/ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsGETApiPermissionTestFeatureFlagsApiStackFeatureFlagsApiDF138C37GETfeatureflags2891A70D"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsGET20403887"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsPOSTApiPermissionFeatureFlagsApiStackFeatureFlagsApiDF138C37POSTfeatureflags286402AE"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsPOSTApiPermissionTestFeatureFlagsApiStackFeatureFlagsApiDF138C37POSTfeatureflags7259B3CA"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsPOSTD290747E"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/{id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsidDCD03147"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/{id}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsidOPTIONS05844E5B"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/{id}/DELETE/ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.DELETE..feature-flags.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsidDELETEApiPermissionFeatureFlagsApiStackFeatureFlagsApiDF138C37DELETEfeatureflagsid93A29D33"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/{id}/DELETE/ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.DELETE..feature-flags.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsidDELETEApiPermissionTestFeatureFlagsApiStackFeatureFlagsApiDF138C37DELETEfeatureflagsid71CB95F3"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/{id}/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApifeatureflagsidDELETE2D9B076B"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/FeatureFlagsApiKey/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApiFeatureFlagsApiKeyDBBFB04F"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/FeatureFlagsUsagePlan/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApiFeatureFlagsUsagePlan455F16E3"
+          }
+        ],
+        "/FeatureFlagsApiStack/FeatureFlagsApi/FeatureFlagsUsagePlan/UsagePlanKeyResource:FeatureFlagsApiStackFeatureFlagsApiFeatureFlagsApiKey323EC819": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeatureFlagsApiFeatureFlagsUsagePlanUsagePlanKeyResourceFeatureFlagsApiStackFeatureFlagsApiFeatureFlagsApiKey323EC81910412685"
+          }
+        ],
+        "/FeatureFlagsApiStack/ApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiUrl"
+          }
+        ],
+        "/FeatureFlagsApiStack/ApiKey": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiKey"
+          }
+        ],
+        "/FeatureFlagsApiStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/FeatureFlagsApiStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/FeatureFlagsApiStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "FeatureFlagsApiStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

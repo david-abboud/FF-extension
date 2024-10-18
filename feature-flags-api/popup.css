@@ -253,6 +253,7 @@
 .popup_new-flag-container {
   display: flex;
   margin-bottom: 10px;
+  align-items: center;
 }
 
 .popup_new-flag-input {
@@ -271,4 +272,61 @@
   font-size: 18px;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.popup_flag-type-toggle {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.popup_flag-type-checkbox {
+  display: none;
+}
+
+.popup_flag-type-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 30px;
+  height: 34px;
+  border-radius: 17px;
+  position: relative;
+  background-color: #ebebeb;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.popup_flag-type-label::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.popup_flag-type-checkbox:checked + .popup_flag-type-label {
+  background-color: #4CAF50;
+}
+
+.popup_flag-type-checkbox:checked + .popup_flag-type-label::after {
+  transform: translateX(66px);
+}
+
+.popup_flag-type-local,
+.popup_flag-type-proj05 {
+  color: #333;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 0 8px;
+  z-index: 1;
+}
+
+.popup_flag-type-checkbox:checked + .popup_flag-type-label .popup_flag-type-local,
+.popup_flag-type-checkbox:not(:checked) + .popup_flag-type-label .popup_flag-type-proj05 {
+  color: #999;
 }
