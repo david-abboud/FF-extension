@@ -26,14 +26,25 @@
         </div>
         <div class="popup_footer">
           <div class="popup_new-flag-container">
-            <input type="text" id="newFlagInput" class="popup_new-flag-input" placeholder="Add new feature flag">
-            <button type="button" id="addNewFlag" class="popup_new-flag-button">+</button>
+
             <div class="popup_flag-type-toggle">
-              <input type="checkbox" id="flagTypeToggle" class="popup_flag-type-checkbox">
-              <label for="flagTypeToggle" class="popup_flag-type-label">
-                <span class="popup_flag-type-local">Local</span>
-                <span class="popup_flag-type-proj05">Proj05</span>
-              </label>
+              <div class="coolinput">
+                <label for="input" class="text">
+
+                  <div class="checkbox-wrapper-35">
+                    <input value="private" name="switch" id="switch" type="checkbox" class="switch">
+                    <label for="switch">
+                      <span class="switch-x-toggletext">
+                        <span class="switch-x-unchecked"><span class="switch-x-hiddenlabel">Unchecked: </span>Dev</span>
+                        <span class="switch-x-checked"><span class="switch-x-hiddenlabel">Checked: </span>Proj05</span>
+                      </span>
+
+                    </label>
+                  </div>
+                </label>
+                <input type="text" placeholder="Add a feature flag" name="input" class="input">
+            </div>
+
             </div>
           </div>
           <button class="popup_apply-button">
