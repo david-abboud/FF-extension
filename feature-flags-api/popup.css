@@ -64,6 +64,7 @@
   margin-bottom: 20px;
   overflow-y: scroll;
   height: 300px;
+  width: 100%;
 }
 
 .popup_pin-container {
