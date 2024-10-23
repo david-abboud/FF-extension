@@ -249,7 +249,7 @@
                   "aws:cdk:cloudformation:props": {
                     "code": {
                       "s3Bucket": "cdk-hnb659fds-assets-550475323052-us-west-2",
-                      "s3Key": "7d1982c80e1a7bd3fb850899ff8d8f0a4eff890d56fedb374f5b553cc83ade25.zip"
+                      "s3Key": "55069d44e18370d3aef2ea295527af481dcc9ae1250e388108bc625d8af9bebb.zip"
                     },
                     "environment": {
                       "variables": {
@@ -335,7 +335,7 @@
                       "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
                       "aws:cdk:cloudformation:props": {
                         "deploymentId": {
-                          "Ref": "FeatureFlagsApiDeployment386FE639e7cfa992e6c2cdad66d6d933581b67f4"
+                          "Ref": "FeatureFlagsApiDeployment386FE639760296ad4d32646a0741eb86e4b1900d"
                         },
                         "restApiId": {
                           "Ref": "FeatureFlagsApi3608D08C"
@@ -390,7 +390,8 @@
                                   "responseParameters": {
                                     "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
                                     "method.response.header.Access-Control-Allow-Origin": "'*'",
-                                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+                                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                                    "method.response.header.Access-Control-Allow-Credentials": "'true'"
                                   }
                                 }
                               ]
@@ -401,7 +402,8 @@
                                 "responseParameters": {
                                   "method.response.header.Access-Control-Allow-Headers": true,
                                   "method.response.header.Access-Control-Allow-Origin": true,
-                                  "method.response.header.Access-Control-Allow-Methods": true
+                                  "method.response.header.Access-Control-Allow-Methods": true,
+                                  "method.response.header.Access-Control-Allow-Credentials": true
                                 }
                               }
                             ],
@@ -478,7 +480,8 @@
                                       "responseParameters": {
                                         "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
                                         "method.response.header.Access-Control-Allow-Origin": "'*'",
-                                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+                                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                                        "method.response.header.Access-Control-Allow-Credentials": "'true'"
                                       }
                                     }
                                   ]
@@ -489,7 +492,8 @@
                                     "responseParameters": {
                                       "method.response.header.Access-Control-Allow-Headers": true,
                                       "method.response.header.Access-Control-Allow-Origin": true,
-                                      "method.response.header.Access-Control-Allow-Methods": true
+                                      "method.response.header.Access-Control-Allow-Methods": true,
+                                      "method.response.header.Access-Control-Allow-Credentials": true
                                     }
                                   }
                                 ],
@@ -802,7 +806,8 @@
                                           "responseParameters": {
                                             "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
                                             "method.response.header.Access-Control-Allow-Origin": "'*'",
-                                            "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+                                            "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                                            "method.response.header.Access-Control-Allow-Credentials": "'true'"
                                           }
                                         }
                                       ]
@@ -813,7 +818,8 @@
                                         "responseParameters": {
                                           "method.response.header.Access-Control-Allow-Headers": true,
                                           "method.response.header.Access-Control-Allow-Origin": true,
-                                          "method.response.header.Access-Control-Allow-Methods": true
+                                          "method.response.header.Access-Control-Allow-Methods": true,
+                                          "method.response.header.Access-Control-Allow-Credentials": true
                                         }
                                       }
                                     ],

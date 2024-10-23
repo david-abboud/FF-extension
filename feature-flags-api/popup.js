@@ -1,9 +1,24 @@
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('features.json')
-    .then(response => response.json())
+  console.log('DOMContentLoaded');
+  const apiUrl = 'https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags';
+  const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
+
+  fetch(apiUrl, {
+    method: 'GET',
+    headers: {
+      'x-api-key': apiKey
+    },
+    mode: 'cors'
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then(data => {
       const checkboxGroup = document.getElementById('checkboxGroup');
-      data.features.forEach(feature => {
+      data.forEach(feature => {
         const checkboxRow = document.createElement('div');
         checkboxRow.className = 'popup_row';
         checkboxRow.innerHTML = `
@@ -12,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <label for="${feature.id}"></label>
           </div>
           <div class="popup_pin-container">
-            <label for="${feature.id}">${feature.label}</label>
+            <label for="${feature.id}">${feature.value}</label>
             <button type="button" class="popup_pin-button" data-feature-id="${feature.id}">
               <span class="popup_pin-emoji">📌</span>
             </button>

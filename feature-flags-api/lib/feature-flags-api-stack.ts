@@ -39,7 +39,9 @@ export class FeatureFlagsApiStack extends cdk.Stack {
       restApiName: 'Feature Flags Service',
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
-        allowMethods: apigateway.Cors.ALL_METHODS
+        allowMethods: apigateway.Cors.ALL_METHODS,
+        allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key', 'X-Amz-Security-Token', 'X-Amz-User-Agent'],
+        allowCredentials: true,
       }
     });
 

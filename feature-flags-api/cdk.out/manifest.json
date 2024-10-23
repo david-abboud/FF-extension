@@ -19,7 +19,7 @@
         "notificationArns": [],
         "assumeRoleArn": "arn:${AWS::Partition}:iam::550475323052:role/cdk-hnb659fds-deploy-role-550475323052-us-west-2",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::550475323052:role/cdk-hnb659fds-cfn-exec-role-550475323052-us-west-2",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-550475323052-us-west-2/10d6153e87134c98a6d8c5de80b1398df06ea88365d088713c21e248aa99b934.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-550475323052-us-west-2/a8919d391495fd8ad1bd8303f8103b3da74f1e8ee32ff7ac0554ccc28e73f50e.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -68,7 +68,7 @@
         "/FeatureFlagsApiStack/FeatureFlagsApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "FeatureFlagsApiDeployment386FE639e7cfa992e6c2cdad66d6d933581b67f4"
+            "data": "FeatureFlagsApiDeployment386FE639760296ad4d32646a0741eb86e4b1900d"
           }
         ],
         "/FeatureFlagsApiStack/FeatureFlagsApi/DeploymentStage.prod/Resource": [
