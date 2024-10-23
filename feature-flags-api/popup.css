@@ -44,7 +44,7 @@
 }
 
 .popup_row__pinned {
-  background-color: #e0e8ef; /* Highlight pinned items */
+  background-color: rgba(180, 195, 249, 0.4); /* Highlight pinned items */
   border-radius: 15px;
 }
 
@@ -78,6 +78,7 @@
   padding: 10px;
   align-items: center;
   margin-bottom: 10px;
+  border-radius: 15px;
 }
 
 .popup_apply-button {
