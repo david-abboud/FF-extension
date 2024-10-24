@@ -526,3 +526,18 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
+.popup_delete-button {
+  display: flex;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 7.5px 8px;
+}
+
+.popup_buttons {
+  display: flex;
+  flex-grow: 0;
+  gap: 5px;
+  align-items: center;
+}

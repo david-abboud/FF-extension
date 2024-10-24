@@ -28,9 +28,14 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
           <div class="popup_pin-container">
             <label for="${feature.id}">${feature.value}</label>
-            <button type="button" class="popup_pin-button" data-feature-id="${feature.id}">
-              <span class="popup_pin-emoji">📌</span>
-            </button>
+            <div class="popup_buttons">
+              <button type="button" class="popup_pin-button" data-feature-id="${feature.id}">
+                <span class="popup_pin-emoji">📌</span>
+              </button>
+              <button type="button" class="popup_delete-button" data-feature-id="${feature.id}">
+                <img src="icons/delete.svg" alt="Delete" class="popup_delete-icon">
+              </button>
+            </div>
           </div>
         `;
         checkboxGroup.appendChild(checkboxRow);
@@ -81,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
       setupPinnedItems();
       setupToggleAllButton();
       setupPinButtonListeners();
+      setupDeleteButtonListeners();
     });
   }
 
@@ -245,5 +251,42 @@ document.addEventListener('DOMContentLoaded', function () {
       location.reload();
     })
     .catch(error => console.error('Error adding feature flag:', error));
+  }
+
+  function setupDeleteButtonListeners() {
+    document.getElementById("checkboxGroup").addEventListener("click", function (e) {
+      const deleteButton = e.target.closest(".popup_delete-button");
+      if (!deleteButton) return;
+
+      const featureId = deleteButton.getAttribute("data-feature-id");
+      if (confirm("Are you sure you want to delete this feature flag?")) {
+        deleteFeatureFlag(featureId);
+      }
+    });
+  }
+
+  function deleteFeatureFlag(id) {
+    const apiUrl = `https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags/${id}`;
+    const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
+
+    fetch(apiUrl, {
+      method: 'DELETE',
+      headers: {
+        'x-api-key': apiKey
+      },
+      mode: 'cors'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Feature flag deleted successfully:', data);
+      // Refresh the feature flags list
+      location.reload();
+    })
+    .catch(error => console.error('Error deleting feature flag:', error));
   }
 });
