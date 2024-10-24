@@ -73,8 +73,8 @@ async function addFeatureFlag(tableName, featureFlag) {
       Item: {
         id: nextId,
         value: featureFlag.value,
-        type: featureFlag.type,
-      },
+        type: featureFlag.type === 'proj05' ? 'proj05' : 'local',
+      }
     });
     await dynamodb.send(command);
     return {
@@ -136,28 +136,18 @@ async function deleteFeatureFlag(tableName, id) {
 }
 
 async function getNextId(tableName) {
-  try {
-    const command = new ScanCommand({
-      TableName: tableName,
-      ProjectionExpression: 'id',
-      ScanIndexForward: false,
-      Limit: 1,
-    });
-    const result = await dynamodb.send(command);
-    console.log('Scan result:', JSON.stringify(result));
-    if (result.Items && result.Items.length > 0) {
-      const lastId = result.Items[0].id;
-      console.log('Last ID:', lastId);
-      const lastNumber = parseInt(lastId.slice(3), 10);
-      const nextId = `cbx${(lastNumber + 1).toString().padStart(2, '0')}`;
-      console.log('Next ID:', nextId);
-      return nextId;
-    } else {
-      console.log('No existing items, starting with cbx01');
-      return 'cbx01';
-    }
-  } catch (error) {
-    console.error('Error in getNextId:', error);
-    throw error;
-  }
+  const command = new ScanCommand({
+    TableName: tableName,
+    ProjectionExpression: 'id',
+  });
+  const result = await dynamodb.send(command);
+  
+  let maxNumber = 0;
+  result.Items.forEach(item => {
+    const num = parseInt(item.id.slice(3), 10);
+    if (num > maxNumber) maxNumber = num;
+  });
+
+  const nextNumber = maxNumber + 1;
+  return `cbx${nextNumber.toString().padStart(2, '0')}`;
 }

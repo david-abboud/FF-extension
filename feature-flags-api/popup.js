@@ -205,4 +205,45 @@ document.addEventListener('DOMContentLoaded', function () {
       chrome.tabs.update(tab.id, { url: newUrl.toString() });
     });
   });
+
+  // Add event listener for the "Add" button
+  document.querySelector('.add-button').addEventListener('click', function() {
+    const inputElement = document.querySelector('.input');
+    const switchElement = document.querySelector('#switch');
+    const featureFlagValue = inputElement.value.trim();
+    const featureFlagType = switchElement.checked ? 'proj05' : 'dev';
+
+    if (featureFlagValue) {
+      addFeatureFlag(featureFlagValue, featureFlagType);
+    } else {
+      console.error('Feature flag value is empty');
+    }
+  });
+
+  function addFeatureFlag(value, type) {
+    const apiUrl = 'https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags';
+    const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({ value, type }),
+      mode: 'cors'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Feature flag added successfully:', data);
+      // Refresh the feature flags list
+      location.reload();
+    })
+    .catch(error => console.error('Error adding feature flag:', error));
+  }
 });
