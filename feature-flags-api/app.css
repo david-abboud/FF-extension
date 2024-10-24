@@ -5,9 +5,11 @@
 body {
   font-family: Arial, sans-serif;
   width: 300px;
-  margin: 0;
   padding: 0;
   background-color: #e8e8e8;
+  border: 5px solid;
+  border-image: linear-gradient(to right, #818CF8, #c5cbfc) 1;
+  margin: 0px;
 }
 
 form {

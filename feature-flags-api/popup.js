@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function setupToggleAllButton() {
     document.getElementById('toggle-all').addEventListener('click', function () {
-      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      const checkboxes = document.querySelectorAll('.popup_checkbox input[type="checkbox"]');
       const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
       checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
     });
