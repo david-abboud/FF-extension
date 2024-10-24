@@ -541,3 +541,37 @@
   gap: 5px;
   align-items: center;
 }
+
+/* .switch-x-icon {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.checkbox-wrapper-35 .switch + label .switch-x-toggletext {
+  padding-right: 20px;
+} */
+.switch-x-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.switch-x-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 5px;
+}
+
+.checkbox-wrapper-35 .switch + label .switch-x-toggletext {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  height: 15px;
+  overflow: hidden;
+  position: relative;
+  transition: width 0.3s ease;
+}
