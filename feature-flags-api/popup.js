@@ -3,13 +3,23 @@ document.addEventListener('DOMContentLoaded', function () {
   const apiUrl = 'https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags';
   const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
 
-  fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'x-api-key': apiKey
-    },
-    mode: 'cors'
-  })
+  chrome.storage.local.get('cachedFeatureFlags', function(result) {
+    if (result.cachedFeatureFlags) {
+      console.log('Loaded cached data');
+      populateUI(result.cachedFeatureFlags);
+    } else {
+      fetchDataFromAPI();
+    }
+  });
+
+  function fetchDataFromAPI() {
+    fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'x-api-key': apiKey
+      },
+      mode: 'cors'
+    })
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -17,34 +27,44 @@ document.addEventListener('DOMContentLoaded', function () {
       return response.json();
     })
     .then(data => {
-      const checkboxGroup = document.getElementById('checkboxGroup');
-      data.forEach(feature => {
-        const checkboxRow = document.createElement('div');
-        checkboxRow.className = 'popup_row';
-        checkboxRow.innerHTML = `
-          <div class="popup_checkbox">
-            <input id="${feature.id}" type="checkbox" value="${feature.value}" data-type="${feature.type}">
-            <label for="${feature.id}"></label>
-          </div>
-          <div class="popup_pin-container">
-            <label for="${feature.id}">${feature.value}</label>
-            <div class="popup_buttons">
-              <button type="button" class="popup_pin-button" data-feature-id="${feature.id}">
-                <span class="popup_pin-emoji">📌</span>
-              </button>
-              <button type="button" class="popup_delete-button" data-feature-id="${feature.id}">
-                <img src="icons/delete.svg" alt="Delete" class="popup_delete-icon">
-              </button>
-            </div>
-          </div>
-        `;
-        checkboxGroup.appendChild(checkboxRow);
+      console.log('Fetched fresh data from API');
+      chrome.storage.local.set({ 'cachedFeatureFlags': data }, function() {
+        console.log('Cache updated');
       });
-
-      // Initialize checkboxes and other interactions
-      initCheckboxes();
+      populateUI(data);
     })
     .catch(error => console.error('Error loading features:', error));
+  }
+
+  function populateUI(data) {
+    const checkboxGroup = document.getElementById('checkboxGroup');
+    checkboxGroup.innerHTML = ''; // Clear existing content
+    data.forEach(feature => {
+      const checkboxRow = document.createElement('div');
+      checkboxRow.className = 'popup_row';
+      checkboxRow.innerHTML = `
+        <div class="popup_checkbox">
+          <input id="${feature.id}" type="checkbox" value="${feature.value}" data-type="${feature.type}">
+          <label for="${feature.id}"></label>
+        </div>
+        <div class="popup_pin-container">
+          <label for="${feature.id}">${feature.value}</label>
+          <div class="popup_buttons">
+            <button type="button" class="popup_pin-button" data-feature-id="${feature.id}">
+              <span class="popup_pin-emoji">📌</span>
+            </button>
+            <button type="button" class="popup_delete-button" data-feature-id="${feature.id}">
+              <img src="icons/delete.svg" alt="Delete" class="popup_delete-icon">
+            </button>
+          </div>
+        </div>
+      `;
+      checkboxGroup.appendChild(checkboxRow);
+    });
+
+    // Initialize checkboxes and other interactions
+    initCheckboxes();
+  }
 
   function initCheckboxes() {
     if (typeof chrome === "undefined" || !chrome.tabs || !chrome.tabs.query) {
@@ -86,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
       setupPinnedItems();
       setupToggleAllButton();
       setupPinButtonListeners();
-      setupDeleteButtonListeners();
     });
   }
 
@@ -247,23 +266,30 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(data => {
       console.log('Feature flag added successfully:', data);
-      // Refresh the feature flags list
-      location.reload();
+      // Update local cache
+      chrome.storage.local.get('cachedFeatureFlags', function(result) {
+        let cachedFlags = result.cachedFeatureFlags || [];
+        cachedFlags.push({ id: data.id, value, type: type === 'proj05' ? 'proj05' : 'local' });
+        chrome.storage.local.set({ 'cachedFeatureFlags': cachedFlags }, function() {
+          console.log('Cache updated with new feature flag');
+          // Refresh the UI
+          populateUI(cachedFlags);
+        });
+      });
     })
     .catch(error => console.error('Error adding feature flag:', error));
   }
 
-  function setupDeleteButtonListeners() {
-    document.getElementById("checkboxGroup").addEventListener("click", function (e) {
-      const deleteButton = e.target.closest(".popup_delete-button");
-      if (!deleteButton) return;
+  // Set up the delete button listener once, outside of any initialization functions
+  document.getElementById("checkboxGroup").addEventListener("click", function (e) {
+    const deleteButton = e.target.closest(".popup_delete-button");
+    if (!deleteButton) return;
 
-      const featureId = deleteButton.getAttribute("data-feature-id");
-      if (confirm("Are you sure you want to delete this feature flag?")) {
-        deleteFeatureFlag(featureId);
-      }
-    });
-  }
+    const featureId = deleteButton.getAttribute("data-feature-id");
+    if (confirm("Are you sure you want to delete this feature flag?")) {
+      deleteFeatureFlag(featureId);
+    }
+  });
 
   function deleteFeatureFlag(id) {
     const apiUrl = `https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags/${id}`;
@@ -284,8 +310,16 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(data => {
       console.log('Feature flag deleted successfully:', data);
-      // Refresh the feature flags list
-      location.reload();
+      // Update local cache
+      chrome.storage.local.get('cachedFeatureFlags', function(result) {
+        let cachedFlags = result.cachedFeatureFlags || [];
+        cachedFlags = cachedFlags.filter(flag => flag.id !== id);
+        chrome.storage.local.set({ 'cachedFeatureFlags': cachedFlags }, function() {
+          console.log('Cache updated after feature flag deletion');
+          // Refresh the UI
+          populateUI(cachedFlags);
+        });
+      });
     })
     .catch(error => console.error('Error deleting feature flag:', error));
   }
