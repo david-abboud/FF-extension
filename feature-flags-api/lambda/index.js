@@ -10,7 +10,51 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'OPTIONS,GET,PUT,POST,DELETE'
 };
 
+// In-memory rate limiting map (will reset when Lambda cold starts)
+const requestCounts = new Map();
+const RATE_LIMIT = 5; // Maximum requests
+const TIME_WINDOW = 60000; // 1 minute in milliseconds
+
+function checkRateLimit(ipAddress) {
+  const now = Date.now();
+  const windowStart = now - TIME_WINDOW;
+  
+  // Clean up old entries
+  for (const [ip, requests] of requestCounts.entries()) {
+    requestCounts.set(ip, requests.filter(time => time > windowStart));
+    if (requestCounts.get(ip).length === 0) {
+      requestCounts.delete(ip);
+    }
+  }
+  
+  // Get or initialize request array for this IP
+  const requests = requestCounts.get(ipAddress) || [];
+  
+  // Check if rate limit is exceeded
+  if (requests.length >= RATE_LIMIT) {
+    return false;
+  }
+  
+  // Add new request timestamp
+  requests.push(now);
+  requestCounts.set(ipAddress, requests);
+  return true;
+}
+
 exports.handler = async (event) => {
+  const ipAddress = event.requestContext.identity.sourceIp;
+  
+  if (!checkRateLimit(ipAddress)) {
+    return {
+      statusCode: 429,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify('Too many requests. Please try again later.')
+    };
+  }
+
   const TABLE_NAME = process.env.TABLE_NAME;
 
   let response;

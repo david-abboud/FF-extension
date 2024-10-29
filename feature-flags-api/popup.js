@@ -246,7 +246,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  const COOLDOWN_PERIOD = 1000; // 1 second
+  let lastApiCall = 0;
+
+  function checkRateLimit() {
+    const now = Date.now();
+    if (now - lastApiCall < COOLDOWN_PERIOD) {
+      return false;
+    }
+    lastApiCall = now;
+    return true;
+  }
+
   function addFeatureFlag(value, type) {
+    if (!checkRateLimit()) {
+      console.warn('Please wait before making another request');
+      return;
+    }
+
     const apiUrl = 'https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags';
     const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
 
@@ -293,6 +310,11 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function deleteFeatureFlag(id) {
+    if (!checkRateLimit()) {
+      console.warn('Please wait before making another request');
+      return;
+    }
+
     const apiUrl = `https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags/${id}`;
     const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
 
