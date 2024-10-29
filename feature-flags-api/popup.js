@@ -240,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (featureFlagValue) {
       addFeatureFlag(featureFlagValue, featureFlagType);
+      inputElement.value = '';
     } else {
       console.error('Feature flag value is empty');
     }
