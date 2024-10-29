@@ -13,6 +13,7 @@
   transform: translateX(-50%);
   margin-bottom: 110px;
   margin-top: 50px;
+  color: #818CF8;
 }
 
 .popup_toggle-all-container {
@@ -61,10 +62,11 @@
 }
 
 .popup_checkbox-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   overflow-y: scroll;
   height: 300px;
   width: 100%;
+  padding: 0 10px;
 }
 
 .popup_pin-container {
@@ -532,7 +534,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 7.5px 8px;
+  padding: 7.5px 7px 7.5px 8px;
 }
 
 .popup_buttons {
@@ -569,4 +571,6 @@
   border: none;
   cursor: pointer;
   font-size: 20px;
+  padding-right: 4px;
+  padding-top: 0px;
 }

@@ -56,9 +56,15 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initial load
   loadData();
 
+  // At the top with other event listeners, outside populateUI
+  document.getElementById('toggle-all').addEventListener('click', function () {
+    const checkboxes = document.querySelectorAll('.popup_checkbox input[type="checkbox"]');
+    const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+    checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
+  });
+
   function populateUI(data) {
     const checkboxGroup = document.getElementById('checkboxGroup');
-    const isFirstLoad = !checkboxGroup.hasChildNodes();
     checkboxGroup.innerHTML = '';
     
     data.forEach(feature => {
@@ -83,12 +89,9 @@ document.addEventListener('DOMContentLoaded', function () {
       `;
       checkboxGroup.appendChild(checkboxRow);
     });
-
-    if (isFirstLoad) {
-      setupToggleAllButton();
-      setupPinButtonListeners();
-    }
     
+    // Always setup pin functionality
+    setupPinButtonListeners();
     setupPinnedItems();
     initCheckboxStates();
   }
@@ -141,16 +144,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  function setupToggleAllButton() {
-    document.getElementById('toggle-all').addEventListener('click', function () {
-      const checkboxes = document.querySelectorAll('.popup_checkbox input[type="checkbox"]');
-      const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-      checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
-    });
-  }
-
   function setupPinButtonListeners() {
-    document.getElementById("checkboxGroup").addEventListener("click", function (e) {
+    // Remove existing listeners first
+    const checkboxGroup = document.getElementById("checkboxGroup");
+    const newCheckboxGroup = checkboxGroup.cloneNode(true);
+    checkboxGroup.parentNode.replaceChild(newCheckboxGroup, checkboxGroup);
+    
+    // Add new listener
+    newCheckboxGroup.addEventListener("click", function (e) {
       const pinButton = e.target.closest(".popup_pin-button");
       if (!pinButton) return;
 
