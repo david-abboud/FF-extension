@@ -1,17 +1,26 @@
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('DOMContentLoaded');
+  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   const apiUrl = 'https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags';
   const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
 
-  chrome.storage.local.get('cachedFeatureFlags', function(result) {
-    if (result.cachedFeatureFlags) {
-      console.log('Loaded cached data');
-      populateUI(result.cachedFeatureFlags);
-    } else {
-      fetchDataFromAPI();
-    }
-  });
+  // Function to check if cache is stale
+  function isCacheStale(lastFetchTime) {
+    return !lastFetchTime || (Date.now() - lastFetchTime > CACHE_DURATION);
+  }
 
+  // Function to load data (either from cache or API)
+  function loadData(forceFetch = false) {
+    chrome.storage.local.get(['cachedFeatureFlags', 'lastFetchTime'], function(result) {
+      if (!forceFetch && result.cachedFeatureFlags && !isCacheStale(result.lastFetchTime)) {
+        console.log('Using cached data');
+        populateUI(result.cachedFeatureFlags);
+      } else {
+        fetchDataFromAPI();
+      }
+    });
+  }
+
+  // Update fetchDataFromAPI to store timestamp
   function fetchDataFromAPI() {
     fetch(apiUrl, {
       method: 'GET',
@@ -28,7 +37,10 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(data => {
       console.log('Fetched fresh data from API');
-      chrome.storage.local.set({ 'cachedFeatureFlags': data }, function() {
+      chrome.storage.local.set({ 
+        'cachedFeatureFlags': data,
+        'lastFetchTime': Date.now()
+      }, function() {
         console.log('Cache updated');
       });
       populateUI(data);
@@ -36,9 +48,19 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch(error => console.error('Error loading features:', error));
   }
 
+  // Add refresh button listener
+  document.getElementById('refresh').addEventListener('click', function() {
+    loadData(true); // Force fetch from API
+  });
+
+  // Initial load
+  loadData();
+
   function populateUI(data) {
     const checkboxGroup = document.getElementById('checkboxGroup');
+    const isFirstLoad = !checkboxGroup.hasChildNodes();
     checkboxGroup.innerHTML = '';
+    
     data.forEach(feature => {
       const checkboxRow = document.createElement('div');
       checkboxRow.className = 'popup_row';
@@ -61,10 +83,17 @@ document.addEventListener('DOMContentLoaded', function () {
       `;
       checkboxGroup.appendChild(checkboxRow);
     });
-    initCheckboxes();
+
+    if (isFirstLoad) {
+      setupToggleAllButton();
+      setupPinButtonListeners();
+    }
+    
+    setupPinnedItems();
+    initCheckboxStates();
   }
 
-  function initCheckboxes() {
+  function initCheckboxStates() {
     if (typeof chrome === "undefined" || !chrome.tabs || !chrome.tabs.query) {
       console.error('Chrome extension environment not available.');
       return;
@@ -99,10 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         });
       });
-
-      setupPinnedItems();
-      setupToggleAllButton();
-      setupPinButtonListeners();
     });
   }
 
@@ -236,27 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  const COOLDOWN_PERIOD = 1000; // 1 second
-  let lastApiCall = 0;
-
-  function checkRateLimit() {
-    const now = Date.now();
-    if (now - lastApiCall < COOLDOWN_PERIOD) {
-      return false;
-    }
-    lastApiCall = now;
-    return true;
-  }
-
   function addFeatureFlag(value, type) {
-    if (!checkRateLimit()) {
-      console.warn('Please wait before making another request');
-      return;
-    }
-
-    const apiUrl = 'https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags';
-    const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
-
     fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -297,14 +302,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function deleteFeatureFlag(id) {
-    if (!checkRateLimit()) {
-      console.warn('Please wait before making another request');
-      return;
-    }
-
     const apiUrl = `https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags/${id}`;
-    const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
-
+    
     fetch(apiUrl, {
       method: 'DELETE',
       headers: {

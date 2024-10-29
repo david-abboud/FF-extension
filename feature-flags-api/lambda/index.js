@@ -10,8 +10,9 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'OPTIONS,GET,PUT,POST,DELETE'
 };
 
+// Rate limiting only for POST requests
 const requestCounts = new Map();
-const RATE_LIMIT = 5;
+const RATE_LIMIT = 10;
 const TIME_WINDOW = 60000; // 1 minute
 
 function checkRateLimit(ipAddress) {
@@ -37,28 +38,24 @@ function checkRateLimit(ipAddress) {
 }
 
 exports.handler = async (event) => {
-  const ipAddress = event.requestContext.identity.sourceIp;
-  
-  if (!checkRateLimit(ipAddress)) {
-    return {
-      statusCode: 429,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify('Too many requests. Please try again later.')
-    };
-  }
-
   const TABLE_NAME = process.env.TABLE_NAME;
-
   let response;
+
   try {
     switch (event.httpMethod) {
       case 'GET':
         response = await getFeatureFlags(TABLE_NAME);
         break;
       case 'POST':
+        // Only apply rate limiting to POST requests
+        const ipAddress = event.requestContext.identity.sourceIp;
+        if (!checkRateLimit(ipAddress)) {
+          return {
+            statusCode: 429,
+            headers: corsHeaders,
+            body: JSON.stringify('Too many requests. Please try again later.')
+          };
+        }
         response = await addFeatureFlag(TABLE_NAME, JSON.parse(event.body));
         break;
       case 'DELETE':
