@@ -10,16 +10,14 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'OPTIONS,GET,PUT,POST,DELETE'
 };
 
-// In-memory rate limiting map (will reset when Lambda cold starts)
 const requestCounts = new Map();
-const RATE_LIMIT = 5; // Maximum requests
-const TIME_WINDOW = 60000; // 1 minute in milliseconds
+const RATE_LIMIT = 5;
+const TIME_WINDOW = 60000; // 1 minute
 
 function checkRateLimit(ipAddress) {
   const now = Date.now();
   const windowStart = now - TIME_WINDOW;
   
-  // Clean up old entries
   for (const [ip, requests] of requestCounts.entries()) {
     requestCounts.set(ip, requests.filter(time => time > windowStart));
     if (requestCounts.get(ip).length === 0) {
@@ -27,15 +25,12 @@ function checkRateLimit(ipAddress) {
     }
   }
   
-  // Get or initialize request array for this IP
   const requests = requestCounts.get(ipAddress) || [];
   
-  // Check if rate limit is exceeded
   if (requests.length >= RATE_LIMIT) {
     return false;
   }
   
-  // Add new request timestamp
   requests.push(now);
   requestCounts.set(ipAddress, requests);
   return true;
@@ -144,7 +139,6 @@ async function deleteFeatureFlag(tableName, id) {
   }
 
   try {
-    // First, check if the item exists
     const getCommand = new GetCommand({
       TableName: tableName,
       Key: { id },
@@ -159,7 +153,6 @@ async function deleteFeatureFlag(tableName, id) {
       };
     }
 
-    // If the item exists, proceed with deletion
     const deleteCommand = new DeleteCommand({
       TableName: tableName,
       Key: { id },

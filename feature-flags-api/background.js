@@ -1,6 +1,3 @@
-// background.js
-
-// Function to apply feature flags
 function applyFeatureFlags(tabId, url) {
   chrome.storage.local.get(tabId.toString(), function(result) {
     const storedFlags = result[tabId.toString()];
@@ -103,7 +100,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       applyFeatureFlags(tabId, lastKnownUrls[tabId]);
       sendResponse({ success: true });
     });
-    return true; // Indicates that the response is sent asynchronously
+    return true;
   }
 });
 

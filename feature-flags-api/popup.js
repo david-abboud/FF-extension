@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function populateUI(data) {
     const checkboxGroup = document.getElementById('checkboxGroup');
-    checkboxGroup.innerHTML = ''; // Clear existing content
+    checkboxGroup.innerHTML = '';
     data.forEach(feature => {
       const checkboxRow = document.createElement('div');
       checkboxRow.className = 'popup_row';
@@ -61,8 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
       `;
       checkboxGroup.appendChild(checkboxRow);
     });
-
-    // Initialize checkboxes and other interactions
     initCheckboxes();
   }
 
@@ -79,7 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      // Combine URL features and stored features
       const url = new URL(tab.url);
       const urlFeatures = url.searchParams.get('features')?.split(',') || [];
       
@@ -159,7 +156,6 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem("pinnedItems", JSON.stringify(pinnedItems));
   }
 
-  // Add the search functionality
   const searchInput = document.getElementById('search');
   searchInput.addEventListener('input', function () {
     const searchTerm = this.value.toLowerCase();
@@ -168,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Event listener for submitting the form
   document.getElementById('url-form').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -197,7 +192,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      // Store the feature flags in local storage
       chrome.storage.local.set({
         [tab.id.toString()]: {
           localFeatureFlags,
@@ -207,7 +201,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Stored Flags for Tab:', tab.id, { localFeatureFlags, proj05FeatureFlags });
       });
 
-      // Update the URL with the new feature flags
       let newUrl = new URL(tab.url);
       if (localFeatureFlags) {
         newUrl.searchParams.set('features', localFeatureFlags);
@@ -215,12 +208,10 @@ document.addEventListener('DOMContentLoaded', function () {
         newUrl.searchParams.delete('features');
       }
 
-      // Add proj05 feature flags
       Object.keys(proj05FeatureFlags).forEach(flag => {
         newUrl.searchParams.set(flag, 'true');
       });
 
-      // Remove any proj05 flags that are no longer active
       document.querySelectorAll('input[data-type="proj05"]').forEach(checkbox => {
         if (!checkbox.checked) {
           newUrl.searchParams.delete(checkbox.value);
@@ -231,7 +222,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Add event listener for the "Add" button
   document.querySelector('.add-button').addEventListener('click', function() {
     const inputElement = document.querySelector('.input');
     const switchElement = document.querySelector('#switch');
@@ -284,13 +274,11 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(data => {
       console.log('Feature flag added successfully:', data);
-      // Update local cache
       chrome.storage.local.get('cachedFeatureFlags', function(result) {
         let cachedFlags = result.cachedFeatureFlags || [];
         cachedFlags.push({ id: data.id, value, type: type === 'proj05' ? 'proj05' : 'local' });
         chrome.storage.local.set({ 'cachedFeatureFlags': cachedFlags }, function() {
           console.log('Cache updated with new feature flag');
-          // Refresh the UI
           populateUI(cachedFlags);
         });
       });
@@ -298,7 +286,6 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch(error => console.error('Error adding feature flag:', error));
   }
 
-  // Set up the delete button listener once, outside of any initialization functions
   document.getElementById("checkboxGroup").addEventListener("click", function (e) {
     const deleteButton = e.target.closest(".popup_delete-button");
     if (!deleteButton) return;
@@ -333,13 +320,11 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(data => {
       console.log('Feature flag deleted successfully:', data);
-      // Update local cache
       chrome.storage.local.get('cachedFeatureFlags', function(result) {
         let cachedFlags = result.cachedFeatureFlags || [];
         cachedFlags = cachedFlags.filter(flag => flag.id !== id);
         chrome.storage.local.set({ 'cachedFeatureFlags': cachedFlags }, function() {
           console.log('Cache updated after feature flag deletion');
-          // Refresh the UI
           populateUI(cachedFlags);
         });
       });

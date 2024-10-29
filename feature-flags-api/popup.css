@@ -44,7 +44,7 @@
 }
 
 .popup_row__pinned {
-  background-color: rgba(180, 195, 249, 0.4); /* Highlight pinned items */
+  background-color: rgba(180, 195, 249, 0.4);
   border-radius: 15px;
 }
 
@@ -188,23 +188,23 @@
 .popup_search-container {
   display: inline-block;
   position: relative;
-  height: 20px; /* Reduced height */
+  height: 20px;
   width: 100%;
   margin-right: 15px;
   padding: 0;
 }
 
 .popup_search-field {
-  height: 20px; /* Reduced height */
-  font-size: 12px; /* Reduced font size */
+  height: 20px;
+  font-size: 12px;
   display: inline-block;
   font-family: "Lato";
   font-weight: 100;
   border: none;
   outline: none;
-  color: #414141; /* cursor color */
-  padding: 2px; /* Reduced padding */
-  padding-right: 50px; /* Adjusted padding-right */
+  color: #414141;
+  padding: 2px;
+  padding-right: 50px;
   width: 0px;
   position: absolute;
   top: 0;
@@ -221,21 +221,16 @@
 }
 
 .popup_search-field:focus {
-  width: 100px; /* Adjusted expanded width */
+  width: 100px;
   z-index: 1;
   border-bottom: 1px solid #818CF8;
   cursor: text;
   opacity: 0.8;
 }
 
-/* .popup_search-field:focus .popup_search-icon {
-  opacity: 0.8;
-  color: #818CF8;
-} */
-
 .popup_search-icon {
-  height: 20px; /* Reduced height */
-  width: 20px; /* Reduced width */
+  height: 20px;
+  width: 20px;
   display: inline-block;
   background-size: 100%;
   text-indent: -10000px;
@@ -415,12 +410,12 @@
   height: 15px;
   overflow: hidden;
   position: relative;
-  width: 22px; /* Default width for "Dev" */
-  transition: width 0.3s ease; /* Smooth transition for width change */
+  width: 22px;
+  transition: width 0.3s ease;
 }
 
 .checkbox-wrapper-35 .switch:checked + label .switch-x-toggletext {
-  width: 37px; /* Width for "Proj05" when checked */
+  width: 37px;
 }
 
 .checkbox-wrapper-35 .switch + label .switch-x-unchecked,
@@ -472,9 +467,6 @@
   transform: none;
 }
 
-
-
-/* From Uiverse.io by kamehame-ha */ 
 .coolinput {
   display: flex;
   flex-direction: column;
@@ -517,7 +509,7 @@
 }
 
 .input-wrapper .input {
-  padding-right: 60px; /* Make room for the button */
+  padding-right: 60px;
 }
 
 .add-button {
@@ -550,18 +542,6 @@
   align-items: center;
 }
 
-/* .switch-x-icon {
-  width: 16px;
-  height: 16px;
-  position: absolute;
-  right: 0px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.checkbox-wrapper-35 .switch + label .switch-x-toggletext {
-  padding-right: 20px;
-} */
 .switch-x-container {
   display: flex;
   align-items: center;
