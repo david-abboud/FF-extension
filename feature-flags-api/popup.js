@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // At the top with other event listeners, outside populateUI
   document.getElementById('toggle-all').addEventListener('click', function () {
-    const checkboxes = document.querySelectorAll('.popup_checkbox input[type="checkbox"]');
+    const checkboxes = document.querySelectorAll('.popup__checkbox input[type="checkbox"]');
     const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
     checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
   });
