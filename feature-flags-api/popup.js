@@ -145,25 +145,37 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function setupPinButtonListeners() {
-    // Remove existing listeners first
     const checkboxGroup = document.getElementById("checkboxGroup");
+    
+    // Remove existing listener if any
     const newCheckboxGroup = checkboxGroup.cloneNode(true);
     checkboxGroup.parentNode.replaceChild(newCheckboxGroup, checkboxGroup);
     
-    // Add new listener
+    // Add single delegated listener for both pin and delete
     newCheckboxGroup.addEventListener("click", function (e) {
+      // Handle pin button clicks
       const pinButton = e.target.closest(".popup_pin-button");
-      if (!pinButton) return;
+      if (pinButton) {
+        const featureId = pinButton.getAttribute("data-feature-id");
+        const featureElement = document.querySelector(`input#${featureId}`).closest(".popup_row");
+        const isPinned = featureElement.classList.toggle("popup_row__pinned");
 
-      const featureId = pinButton.getAttribute("data-feature-id");
-      const featureElement = document.querySelector(`input#${featureId}`).closest(".popup_row");
-      const isPinned = featureElement.classList.toggle("popup_row__pinned");
+        if (isPinned) {
+          this.insertBefore(featureElement, this.firstChild);
+          addPinnedItem(featureId);
+        } else {
+          removePinnedItem(featureId);
+        }
+        return;
+      }
 
-      if (isPinned) {
-        this.insertBefore(featureElement, this.firstChild);
-        addPinnedItem(featureId);
-      } else {
-        removePinnedItem(featureId);
+      // Handle delete button clicks
+      const deleteButton = e.target.closest(".popup_delete-button");
+      if (deleteButton) {
+        const featureId = deleteButton.getAttribute("data-feature-id");
+        if (confirm("Are you sure you want to delete this feature flag?")) {
+          deleteFeatureFlag(featureId);
+        }
       }
     });
   }
@@ -292,18 +304,12 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch(error => console.error('Error adding feature flag:', error));
   }
 
-  document.getElementById("checkboxGroup").addEventListener("click", function (e) {
-    const deleteButton = e.target.closest(".popup_delete-button");
-    if (!deleteButton) return;
-
-    const featureId = deleteButton.getAttribute("data-feature-id");
-    if (confirm("Are you sure you want to delete this feature flag?")) {
-      deleteFeatureFlag(featureId);
-    }
-  });
-
   function deleteFeatureFlag(id) {
     const apiUrl = `https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags/${id}`;
+    
+    let pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
+    pinnedItems = pinnedItems.filter(item => item !== id);
+    localStorage.setItem("pinnedItems", JSON.stringify(pinnedItems));
     
     fetch(apiUrl, {
       method: 'DELETE',
