@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Update fetchDataFromAPI to store timestamp
   function fetchDataFromAPI() {
     fetch(apiUrl, {
       method: 'GET',
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch(error => console.error('Error loading features:', error));
   }
 
-  // Add refresh button listener
   document.getElementById('refresh').addEventListener('click', function() {
     loadData(true); // Force fetch from API
   });
@@ -56,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initial load
   loadData();
 
-  // At the top with other event listeners, outside populateUI
   document.getElementById('toggle-all').addEventListener('click', function () {
     const checkboxes = document.querySelectorAll('.popup__checkbox input[type="checkbox"]');
     const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
