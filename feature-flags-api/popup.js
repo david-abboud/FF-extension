@@ -259,9 +259,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  document.querySelector('.add-button').addEventListener('click', function() {
-    const inputElement = document.querySelector('.input');
-    const switchElement = document.querySelector('#switch');
+  document.querySelector('.popup__input-button').addEventListener('click', function() {
+    const inputElement = document.querySelector('.popup__input');
+    const switchElement = document.querySelector('#type-switch');
     const featureFlagValue = inputElement.value.trim();
     const featureFlagType = switchElement.checked ? 'proj05' : 'dev';
 
