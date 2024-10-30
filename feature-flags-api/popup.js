@@ -69,20 +69,20 @@ document.addEventListener('DOMContentLoaded', function () {
     
     data.forEach(feature => {
       const checkboxRow = document.createElement('div');
-      checkboxRow.className = 'popup_row';
+      checkboxRow.className = 'popup__row';
       checkboxRow.innerHTML = `
-        <div class="popup_checkbox">
+        <div class="popup__checkbox">
           <input id="${feature.id}" type="checkbox" value="${feature.value}" data-type="${feature.type}">
           <label for="${feature.id}"></label>
         </div>
-        <div class="popup_pin-container">
+        <div class="popup__pin-container">
           <label for="${feature.id}">${feature.value}</label>
-          <div class="popup_buttons">
-            <button type="button" class="popup_pin-button" data-feature-id="${feature.id}">
-              <span class="popup_pin-emoji">📌</span>
+          <div class="popup__buttons">
+            <button type="button" class="popup__pin-button" data-feature-id="${feature.id}">
+              <span class="popup__pin-emoji">📌</span>
             </button>
-            <button type="button" class="popup_delete-button" data-feature-id="${feature.id}">
-              <img src="icons/delete.svg" alt="Delete" class="popup_delete-icon">
+            <button type="button" class="popup__delete-button" data-feature-id="${feature.id}">
+              <img src="icons/delete.svg" alt="Delete" class="popup__delete-icon">
             </button>
           </div>
         </div>
@@ -90,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function () {
       checkboxGroup.appendChild(checkboxRow);
     });
     
-    // Always setup pin functionality
     setupPinButtonListeners();
     setupPinnedItems();
     initCheckboxStates();
@@ -138,8 +137,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const checkboxGroup = document.getElementById("checkboxGroup");
     const pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
     pinnedItems.forEach(function (featureId) {
-      const featureElement = document.querySelector(`#${featureId}`).closest(".popup_row");
-      featureElement.classList.add("popup_row__pinned");
+      const featureElement = document.querySelector(`#${featureId}`).closest(".popup__row");
+      featureElement.classList.add("popup__row_pinned");
       checkboxGroup.insertBefore(featureElement, checkboxGroup.firstChild);
     });
   }
@@ -154,11 +153,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add single delegated listener for both pin and delete
     newCheckboxGroup.addEventListener("click", function (e) {
       // Handle pin button clicks
-      const pinButton = e.target.closest(".popup_pin-button");
+      const pinButton = e.target.closest(".popup__pin-button");
       if (pinButton) {
         const featureId = pinButton.getAttribute("data-feature-id");
-        const featureElement = document.querySelector(`input#${featureId}`).closest(".popup_row");
-        const isPinned = featureElement.classList.toggle("popup_row__pinned");
+        const featureElement = document.querySelector(`input#${featureId}`).closest(".popup__row");
+        const isPinned = featureElement.classList.toggle("popup__row_pinned");
 
         if (isPinned) {
           this.insertBefore(featureElement, this.firstChild);
@@ -170,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       // Handle delete button clicks
-      const deleteButton = e.target.closest(".popup_delete-button");
+      const deleteButton = e.target.closest(".popup__delete-button");
       if (deleteButton) {
         const featureId = deleteButton.getAttribute("data-feature-id");
         if (confirm("Are you sure you want to delete this feature flag?")) {
@@ -197,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const searchInput = document.getElementById('search');
   searchInput.addEventListener('input', function () {
     const searchTerm = this.value.toLowerCase();
-    document.querySelectorAll('.popup_row').forEach(function (feature) {
+    document.querySelectorAll('.popup__row').forEach(function (feature) {
       feature.style.display = feature.innerText.toLowerCase().includes(searchTerm) ? 'flex' : 'none';
     });
   });
