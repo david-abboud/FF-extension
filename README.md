@@ -2,6 +2,8 @@
 
 A Chrome extension for managing feature flags across different environments. Easily toggle, search, pin, and manage feature flags for development and production environments.
 
+<img width="313" alt="image" src="https://github.com/user-attachments/assets/6844ec96-6504-4da1-b5b6-87a0cc52df9e">
+
 ## Features
 
 - 🔄 Toggle multiple feature flags at once
