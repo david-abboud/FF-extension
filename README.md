@@ -1,6 +1,6 @@
 # Feature Flags Chrome Extension
 
-A Chrome extension for managing feature flags across different environments. Easily toggle, search, pin, and manage feature flags for development and production environments.
+A Chrome extension for managing feature flags inside SIMON. Easily toggle, search, pin, and manage feature flags for 2.0 and 3.0.
 
 <img width="312" alt="image" src="https://github.com/user-attachments/assets/05fec918-e79c-4014-b5e3-753ed4bbf17e">
 
@@ -11,7 +11,7 @@ A Chrome extension for managing feature flags across different environments. Eas
 - 🔍 Search functionality
 - 💾 Local caching (5-minute duration)
 - 🔄 Auto-sync across tabs
-- 🎯 Support for both development and Proj05 environments
+- 🎯 Support for both 2.0 and 3.0 feature flags
 = 💾 Preserves FF upon refresh and server rebuild (on save) as long as the FF is selected from the popup
 
 ## Installation
@@ -36,8 +36,8 @@ git clone https://github.com/david-abboud/FF-extension.git
 - Click "Apply Flags" to update the current tab's URL
 
 ### Adding New Flags
-1. Choose environment type using the Dev/Proj05 toggle
-2. Enter flag name in the input field
+1. Choose where this flag is configured (2.0 or 3.0)
+2. Enter the flag name in the input field
 3. Click "Add" button
 
 ### Managing Flags
