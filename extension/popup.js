@@ -46,12 +46,17 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       const currentUrl = new URL(tab.url);
-      let endpoint = apiUrl;
+      let endpoint = apiUrl;  // Default endpoint for all flags
 
-      if (currentUrl.hostname === 'localhost' && currentUrl.port === '4000') {
+      // More specific URL matching
+      if (currentUrl.hostname === 'localhost') {
         endpoint = `${apiUrl}/local`;
+        console.log('Localhost detected, fetching local flags');
       } else if (currentUrl.hostname === 'proj05.simon365.com') {
         endpoint = `${apiUrl}/proj05`;
+        console.log('Proj05 detected, fetching proj05 flags');
+      } else {
+        console.log('Other domain detected, fetching all flags');
       }
 
       fetch(endpoint, {
@@ -66,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return response.json();
       })
       .then(data => {
-        console.log('Fetched fresh data from API for tab:', tab.id);
+        console.log('Fetched fresh data from API for tab:', tab.id, 'Endpoint:', endpoint);
         const cacheKey = getCacheKey(tab.id);
         chrome.storage.local.set({ 
           [cacheKey.flags]: data,
