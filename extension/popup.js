@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const deleteButton = e.target.closest(".popup__delete-button");
       if (deleteButton) {
         const featureId = deleteButton.getAttribute("data-feature-id");
-        if (confirm("Are you sure you want to delete this feature flag?")) {
+        if (confirm("⚠️You are deleting a feature flag from a shared list that may be used by other users.\nAre you sure you want to delete this feature flag?")) {
           deleteFeatureFlag(featureId);
         }
       }
