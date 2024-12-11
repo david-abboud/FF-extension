@@ -343,12 +343,11 @@
   height: 15px;
   overflow: hidden;
   position: relative;
-  width: 22px;
-  transition: width 0.3s ease;
+  width: 18px;
 }
 
 .popup__switch #type-switch:checked + label .popup__switch-text {
-  width: 37px;
+  width: 18px;
 }
 
 .popup__switch #type-switch + label .popup__switch-text_unchecked,
@@ -480,6 +479,11 @@
   display: flex;
   align-items: center;
   width: 100%;
+}
+
+.popup__switch-label {
+  display: flex;
+  gap: 4px;
 }
 
 .popup__switch-icon {
