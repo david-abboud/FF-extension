@@ -44,7 +44,7 @@ exports.handler = async (event) => {
   try {
     switch (event.httpMethod) {
       case 'GET':
-        response = await getFeatureFlags(TABLE_NAME);
+        response = await getFeatureFlags(TABLE_NAME, event.path);
         break;
       case 'POST':
         // Only apply rate limiting to POST requests
@@ -82,11 +82,30 @@ exports.handler = async (event) => {
   };
 };
 
-async function getFeatureFlags(tableName) {
+async function getFeatureFlags(tableName, path) {
   try {
-    const command = new ScanCommand({
+    let params = {
       TableName: tableName,
-    });
+    };
+
+    // If path includes type specification, add filter
+    if (path) {
+      const flagType = path.split('/').pop(); // Gets 'local' or 'proj05' from the path
+      if (flagType === 'local' || flagType === 'proj05') {
+        params = {
+          TableName: tableName,
+          FilterExpression: '#type = :typeValue',
+          ExpressionAttributeNames: {
+            '#type': 'type'
+          },
+          ExpressionAttributeValues: {
+            ':typeValue': flagType
+          }
+        };
+      }
+    }
+
+    const command = new ScanCommand(params);
     const result = await dynamodb.send(command);
     return {
       statusCode: 200,

@@ -8,43 +8,76 @@ document.addEventListener('DOMContentLoaded', function () {
     return !lastFetchTime || (Date.now() - lastFetchTime > CACHE_DURATION);
   }
 
+  // Function to get cache key
+  function getCacheKey(tabId) {
+    return {
+      flags: `cachedFeatureFlags_${tabId}`,
+      time: `lastFetchTime_${tabId}`
+    };
+  }
+
   // Function to load data (either from cache or API)
   function loadData(forceFetch = false) {
-    chrome.storage.local.get(['cachedFeatureFlags', 'lastFetchTime'], function(result) {
-      if (!forceFetch && result.cachedFeatureFlags && !isCacheStale(result.lastFetchTime)) {
-        console.log('Using cached data');
-        populateUI(result.cachedFeatureFlags);
-      } else {
-        fetchDataFromAPI();
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const tab = tabs[0];
+      if (!tab) {
+        console.error('No active tab found.');
+        return;
       }
+
+      const cacheKey = getCacheKey(tab.id);
+      chrome.storage.local.get([cacheKey.flags, cacheKey.time], function(result) {
+        if (!forceFetch && result[cacheKey.flags] && !isCacheStale(result[cacheKey.time])) {
+          console.log('Using cached data for tab:', tab.id);
+          populateUI(result[cacheKey.flags]);
+        } else {
+          fetchDataFromAPI();
+        }
+      });
     });
   }
 
   function fetchDataFromAPI() {
-    fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'x-api-key': apiKey
-      },
-      mode: 'cors'
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const tab = tabs[0];
+      if (!tab || !tab.url) {
+        console.error('No active tab or URL found.');
+        return;
       }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Fetched fresh data from API');
-      chrome.storage.local.set({ 
-        'cachedFeatureFlags': data,
-        'lastFetchTime': Date.now()
-      }, function() {
-        console.log('Cache updated');
-      });
-      populateUI(data);
-    })
-    .catch(error => console.error('Error loading features:', error));
+
+      const currentUrl = new URL(tab.url);
+      let endpoint = apiUrl;
+
+      if (currentUrl.hostname === 'localhost' && currentUrl.port === '4000') {
+        endpoint = `${apiUrl}/local`;
+      } else if (currentUrl.hostname === 'proj05.simon365.com') {
+        endpoint = `${apiUrl}/proj05`;
+      }
+
+      fetch(endpoint, {
+        method: 'GET',
+        headers: {
+          'x-api-key': apiKey
+        },
+        mode: 'cors'
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        console.log('Fetched fresh data from API for tab:', tab.id);
+        const cacheKey = getCacheKey(tab.id);
+        chrome.storage.local.set({ 
+          [cacheKey.flags]: data,
+          [cacheKey.time]: Date.now()
+        }, function() {
+          console.log('Cache updated for tab:', tab.id);
+        });
+        populateUI(data);
+      })
+      .catch(error => console.error('Error loading features:', error));
+    });
   }
 
   document.getElementById('refresh').addEventListener('click', function() {

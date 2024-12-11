@@ -55,11 +55,21 @@ export class FeatureFlagsApiStack extends cdk.Stack {
 
     const featureFlags = api.root.addResource('feature-flags');
     
+    // Add new resources for specific feature flag types
+    const localFlags = featureFlags.addResource('local');
+    const proj05Flags = featureFlags.addResource('proj05');
+    
+    // Main GET endpoint (keeps backward compatibility)
     featureFlags.addMethod('GET', new apigateway.LambdaIntegration(featureFlagsFunction), {
       apiKeyRequired: true
     });
     
-    featureFlags.addMethod('POST', new apigateway.LambdaIntegration(featureFlagsFunction), {
+    // New type-specific GET endpoints
+    localFlags.addMethod('GET', new apigateway.LambdaIntegration(featureFlagsFunction), {
+      apiKeyRequired: true
+    });
+    
+    proj05Flags.addMethod('GET', new apigateway.LambdaIntegration(featureFlagsFunction), {
       apiKeyRequired: true
     });
 

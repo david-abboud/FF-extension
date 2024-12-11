@@ -249,7 +249,7 @@
                   "aws:cdk:cloudformation:props": {
                     "code": {
                       "s3Bucket": "cdk-hnb659fds-assets-550475323052-us-west-2",
-                      "s3Key": "fd4a1766a06d403619863367dc90fbd026b9d696289e60cfc51781cc419ccfce.zip"
+                      "s3Key": "f96393576d5a19098f10232bbb6ae98aaf557f892918386418896792cc6aff9c.zip"
                     },
                     "environment": {
                       "variables": {
@@ -335,7 +335,7 @@
                       "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
                       "aws:cdk:cloudformation:props": {
                         "deploymentId": {
-                          "Ref": "FeatureFlagsApiDeployment386FE639760296ad4d32646a0741eb86e4b1900d"
+                          "Ref": "FeatureFlagsApiDeployment386FE6390a11853dfb0d53d7244c14961b30adda"
                         },
                         "restApiId": {
                           "Ref": "FeatureFlagsApi3608D08C"
@@ -516,6 +516,428 @@
                           "version": "2.162.1"
                         }
                       },
+                      "local": {
+                        "id": "local",
+                        "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/local",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/local/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                              "aws:cdk:cloudformation:props": {
+                                "parentId": {
+                                  "Ref": "FeatureFlagsApifeatureflagsE9B1D447"
+                                },
+                                "pathPart": "local",
+                                "restApiId": {
+                                  "Ref": "FeatureFlagsApi3608D08C"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                              "version": "2.162.1"
+                            }
+                          },
+                          "OPTIONS": {
+                            "id": "OPTIONS",
+                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/local/OPTIONS",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/local/OPTIONS/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": false,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "OPTIONS",
+                                    "integration": {
+                                      "type": "MOCK",
+                                      "requestTemplates": {
+                                        "application/json": "{ statusCode: 200 }"
+                                      },
+                                      "integrationResponses": [
+                                        {
+                                          "statusCode": "204",
+                                          "responseParameters": {
+                                            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                                            "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                            "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                                            "method.response.header.Access-Control-Allow-Credentials": "'true'"
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "methodResponses": [
+                                      {
+                                        "statusCode": "204",
+                                        "responseParameters": {
+                                          "method.response.header.Access-Control-Allow-Headers": true,
+                                          "method.response.header.Access-Control-Allow-Origin": true,
+                                          "method.response.header.Access-Control-Allow-Methods": true,
+                                          "method.response.header.Access-Control-Allow-Credentials": true
+                                        }
+                                      }
+                                    ],
+                                    "resourceId": {
+                                      "Ref": "FeatureFlagsApifeatureflagslocal3678D0DA"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "FeatureFlagsApi3608D08C"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.162.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.162.1"
+                            }
+                          },
+                          "GET": {
+                            "id": "GET",
+                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/local/GET",
+                            "children": {
+                              "ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.local": {
+                                "id": "ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.local",
+                                "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/local/GET/ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.local",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "FeatureFlagsFunction742178EA",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-west-2:550475323052:",
+                                          {
+                                            "Ref": "FeatureFlagsApi3608D08C"
+                                          },
+                                          "/",
+                                          {
+                                            "Ref": "FeatureFlagsApiDeploymentStageprod23102E7A"
+                                          },
+                                          "/GET/feature-flags/local"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.162.1"
+                                }
+                              },
+                              "ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.local": {
+                                "id": "ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.local",
+                                "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/local/GET/ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.local",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "FeatureFlagsFunction742178EA",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-west-2:550475323052:",
+                                          {
+                                            "Ref": "FeatureFlagsApi3608D08C"
+                                          },
+                                          "/test-invoke-stage/GET/feature-flags/local"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.162.1"
+                                }
+                              },
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/local/GET/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "GET",
+                                    "integration": {
+                                      "type": "AWS_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "FeatureFlagsFunction742178EA",
+                                                "Arn"
+                                              ]
+                                            },
+                                            "/invocations"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "POST"
+                                    },
+                                    "resourceId": {
+                                      "Ref": "FeatureFlagsApifeatureflagslocal3678D0DA"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "FeatureFlagsApi3608D08C"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.162.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.162.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                          "version": "2.162.1"
+                        }
+                      },
+                      "proj05": {
+                        "id": "proj05",
+                        "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/proj05",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/proj05/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                              "aws:cdk:cloudformation:props": {
+                                "parentId": {
+                                  "Ref": "FeatureFlagsApifeatureflagsE9B1D447"
+                                },
+                                "pathPart": "proj05",
+                                "restApiId": {
+                                  "Ref": "FeatureFlagsApi3608D08C"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                              "version": "2.162.1"
+                            }
+                          },
+                          "OPTIONS": {
+                            "id": "OPTIONS",
+                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/proj05/OPTIONS",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/proj05/OPTIONS/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": false,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "OPTIONS",
+                                    "integration": {
+                                      "type": "MOCK",
+                                      "requestTemplates": {
+                                        "application/json": "{ statusCode: 200 }"
+                                      },
+                                      "integrationResponses": [
+                                        {
+                                          "statusCode": "204",
+                                          "responseParameters": {
+                                            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                                            "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                            "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                                            "method.response.header.Access-Control-Allow-Credentials": "'true'"
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "methodResponses": [
+                                      {
+                                        "statusCode": "204",
+                                        "responseParameters": {
+                                          "method.response.header.Access-Control-Allow-Headers": true,
+                                          "method.response.header.Access-Control-Allow-Origin": true,
+                                          "method.response.header.Access-Control-Allow-Methods": true,
+                                          "method.response.header.Access-Control-Allow-Credentials": true
+                                        }
+                                      }
+                                    ],
+                                    "resourceId": {
+                                      "Ref": "FeatureFlagsApifeatureflagsproj0571AE952D"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "FeatureFlagsApi3608D08C"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.162.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.162.1"
+                            }
+                          },
+                          "GET": {
+                            "id": "GET",
+                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/proj05/GET",
+                            "children": {
+                              "ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.proj05": {
+                                "id": "ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.proj05",
+                                "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/proj05/GET/ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.proj05",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "FeatureFlagsFunction742178EA",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-west-2:550475323052:",
+                                          {
+                                            "Ref": "FeatureFlagsApi3608D08C"
+                                          },
+                                          "/",
+                                          {
+                                            "Ref": "FeatureFlagsApiDeploymentStageprod23102E7A"
+                                          },
+                                          "/GET/feature-flags/proj05"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.162.1"
+                                }
+                              },
+                              "ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.proj05": {
+                                "id": "ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.proj05",
+                                "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/proj05/GET/ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.GET..feature-flags.proj05",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "FeatureFlagsFunction742178EA",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-west-2:550475323052:",
+                                          {
+                                            "Ref": "FeatureFlagsApi3608D08C"
+                                          },
+                                          "/test-invoke-stage/GET/feature-flags/proj05"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.162.1"
+                                }
+                              },
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/proj05/GET/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "GET",
+                                    "integration": {
+                                      "type": "AWS_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "FeatureFlagsFunction742178EA",
+                                                "Arn"
+                                              ]
+                                            },
+                                            "/invocations"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "POST"
+                                    },
+                                    "resourceId": {
+                                      "Ref": "FeatureFlagsApifeatureflagsproj0571AE952D"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "FeatureFlagsApi3608D08C"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.162.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.162.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                          "version": "2.162.1"
+                        }
+                      },
                       "GET": {
                         "id": "GET",
                         "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/GET",
@@ -599,127 +1021,6 @@
                                 "apiKeyRequired": true,
                                 "authorizationType": "NONE",
                                 "httpMethod": "GET",
-                                "integration": {
-                                  "type": "AWS_PROXY",
-                                  "uri": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/",
-                                        {
-                                          "Fn::GetAtt": [
-                                            "FeatureFlagsFunction742178EA",
-                                            "Arn"
-                                          ]
-                                        },
-                                        "/invocations"
-                                      ]
-                                    ]
-                                  },
-                                  "integrationHttpMethod": "POST"
-                                },
-                                "resourceId": {
-                                  "Ref": "FeatureFlagsApifeatureflagsE9B1D447"
-                                },
-                                "restApiId": {
-                                  "Ref": "FeatureFlagsApi3608D08C"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
-                              "version": "2.162.1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
-                          "version": "2.162.1"
-                        }
-                      },
-                      "POST": {
-                        "id": "POST",
-                        "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST",
-                        "children": {
-                          "ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags": {
-                            "id": "ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags",
-                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                              "aws:cdk:cloudformation:props": {
-                                "action": "lambda:InvokeFunction",
-                                "functionName": {
-                                  "Fn::GetAtt": [
-                                    "FeatureFlagsFunction742178EA",
-                                    "Arn"
-                                  ]
-                                },
-                                "principal": "apigateway.amazonaws.com",
-                                "sourceArn": {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      "arn:aws:execute-api:us-west-2:550475323052:",
-                                      {
-                                        "Ref": "FeatureFlagsApi3608D08C"
-                                      },
-                                      "/",
-                                      {
-                                        "Ref": "FeatureFlagsApiDeploymentStageprod23102E7A"
-                                      },
-                                      "/POST/feature-flags"
-                                    ]
-                                  ]
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                              "version": "2.162.1"
-                            }
-                          },
-                          "ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags": {
-                            "id": "ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags",
-                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                              "aws:cdk:cloudformation:props": {
-                                "action": "lambda:InvokeFunction",
-                                "functionName": {
-                                  "Fn::GetAtt": [
-                                    "FeatureFlagsFunction742178EA",
-                                    "Arn"
-                                  ]
-                                },
-                                "principal": "apigateway.amazonaws.com",
-                                "sourceArn": {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      "arn:aws:execute-api:us-west-2:550475323052:",
-                                      {
-                                        "Ref": "FeatureFlagsApi3608D08C"
-                                      },
-                                      "/test-invoke-stage/POST/feature-flags"
-                                    ]
-                                  ]
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                              "version": "2.162.1"
-                            }
-                          },
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
-                              "aws:cdk:cloudformation:props": {
-                                "apiKeyRequired": true,
-                                "authorizationType": "NONE",
-                                "httpMethod": "POST",
                                 "integration": {
                                   "type": "AWS_PROXY",
                                   "uri": {
