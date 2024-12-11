@@ -172,6 +172,12 @@
                                       ]
                                     },
                                     {
+                                      "Fn::GetAtt": [
+                                        "RateLimitTableFAD921A1",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
                                       "Fn::Join": [
                                         "",
                                         [
@@ -184,6 +190,9 @@
                                           "/index/*"
                                         ]
                                       ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
                                     }
                                   ]
                                 }
@@ -249,12 +258,15 @@
                   "aws:cdk:cloudformation:props": {
                     "code": {
                       "s3Bucket": "cdk-hnb659fds-assets-550475323052-us-west-2",
-                      "s3Key": "f96393576d5a19098f10232bbb6ae98aaf557f892918386418896792cc6aff9c.zip"
+                      "s3Key": "2cb4c4320ee6f0d2171cf9a37b27a080c3b2a1b87fd1b7428ef839b06fc9e2dd.zip"
                     },
                     "environment": {
                       "variables": {
                         "TABLE_NAME": {
                           "Ref": "FeatureFlagsTable00AD5587"
+                        },
+                        "RATE_LIMIT_TABLE": {
+                          "Ref": "RateLimitTableFAD921A1"
                         }
                       }
                     },
@@ -335,7 +347,7 @@
                       "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
                       "aws:cdk:cloudformation:props": {
                         "deploymentId": {
-                          "Ref": "FeatureFlagsApiDeployment386FE6390a11853dfb0d53d7244c14961b30adda"
+                          "Ref": "FeatureFlagsApiDeployment386FE63909ad48b0ba699d33c017a5570409ef1b"
                         },
                         "restApiId": {
                           "Ref": "FeatureFlagsApi3608D08C"
@@ -1059,6 +1071,127 @@
                           "version": "2.162.1"
                         }
                       },
+                      "POST": {
+                        "id": "POST",
+                        "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST",
+                        "children": {
+                          "ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags": {
+                            "id": "ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags",
+                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "FeatureFlagsFunction742178EA",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:execute-api:us-west-2:550475323052:",
+                                      {
+                                        "Ref": "FeatureFlagsApi3608D08C"
+                                      },
+                                      "/",
+                                      {
+                                        "Ref": "FeatureFlagsApiDeploymentStageprod23102E7A"
+                                      },
+                                      "/POST/feature-flags"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.162.1"
+                            }
+                          },
+                          "ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags": {
+                            "id": "ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags",
+                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "FeatureFlagsFunction742178EA",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:execute-api:us-west-2:550475323052:",
+                                      {
+                                        "Ref": "FeatureFlagsApi3608D08C"
+                                      },
+                                      "/test-invoke-stage/POST/feature-flags"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.162.1"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": true,
+                                "authorizationType": "NONE",
+                                "httpMethod": "POST",
+                                "integration": {
+                                  "type": "AWS_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "FeatureFlagsFunction742178EA",
+                                            "Arn"
+                                          ]
+                                        },
+                                        "/invocations"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "POST"
+                                },
+                                "resourceId": {
+                                  "Ref": "FeatureFlagsApifeatureflagsE9B1D447"
+                                },
+                                "restApiId": {
+                                  "Ref": "FeatureFlagsApi3608D08C"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.162.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.162.1"
+                        }
+                      },
                       "{id}": {
                         "id": "{id}",
                         "path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/{id}",
@@ -1374,6 +1507,57 @@
             },
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.162.1"
+            }
+          },
+          "RateLimitTable": {
+            "id": "RateLimitTable",
+            "path": "FeatureFlagsApiStack/RateLimitTable",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "FeatureFlagsApiStack/RateLimitTable/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                  "aws:cdk:cloudformation:props": {
+                    "attributeDefinitions": [
+                      {
+                        "attributeName": "id",
+                        "attributeType": "S"
+                      }
+                    ],
+                    "keySchema": [
+                      {
+                        "attributeName": "id",
+                        "keyType": "HASH"
+                      }
+                    ],
+                    "provisionedThroughput": {
+                      "readCapacityUnits": 5,
+                      "writeCapacityUnits": 5
+                    },
+                    "timeToLiveSpecification": {
+                      "attributeName": "ttl",
+                      "enabled": true
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                  "version": "2.162.1"
+                }
+              },
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "FeatureFlagsApiStack/RateLimitTable/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.162.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_dynamodb.Table",
               "version": "2.162.1"
             }
           },

@@ -64,7 +64,6 @@ export class FeatureFlagsApiStack extends cdk.Stack {
       apiKeyRequired: true
     });
     
-    // New type-specific GET endpoints
     localFlags.addMethod('GET', new apigateway.LambdaIntegration(featureFlagsFunction), {
       apiKeyRequired: true
     });
@@ -73,10 +72,23 @@ export class FeatureFlagsApiStack extends cdk.Stack {
       apiKeyRequired: true
     });
 
+    featureFlags.addMethod('POST', new apigateway.LambdaIntegration(featureFlagsFunction), {
+      apiKeyRequired: true
+    });
+
     const singleFlag = featureFlags.addResource('{id}');
     singleFlag.addMethod('DELETE', new apigateway.LambdaIntegration(featureFlagsFunction), {
       apiKeyRequired: true
     });
+
+    const rateLimitTable = new dynamodb.Table(this, 'RateLimitTable', {
+      partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
+      timeToLiveAttribute: 'ttl',
+      removalPolicy: cdk.RemovalPolicy.DESTROY
+    });
+
+    featureFlagsFunction.addEnvironment('RATE_LIMIT_TABLE', rateLimitTable.tableName);
+    rateLimitTable.grantReadWriteData(featureFlagsFunction);
 
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: api.url,

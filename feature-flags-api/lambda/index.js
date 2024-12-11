@@ -11,30 +11,46 @@ const corsHeaders = {
 };
 
 // Rate limiting only for POST requests
-const requestCounts = new Map();
 const RATE_LIMIT = 10;
 const TIME_WINDOW = 60000; // 1 minute
 
-function checkRateLimit(ipAddress) {
+async function checkRateLimit(ipAddress) {
   const now = Date.now();
   const windowStart = now - TIME_WINDOW;
   
-  for (const [ip, requests] of requestCounts.entries()) {
-    requestCounts.set(ip, requests.filter(time => time > windowStart));
-    if (requestCounts.get(ip).length === 0) {
-      requestCounts.delete(ip);
+  try {
+    const getCommand = new GetCommand({
+      TableName: process.env.RATE_LIMIT_TABLE,
+      Key: {
+        id: `ratelimit_${ipAddress}`
+      }
+    });
+    
+    const result = await dynamodb.send(getCommand);
+    const requests = result.Item?.timestamps || [];
+    
+    // Clean old timestamps and check limit
+    const recentRequests = requests.filter(time => time > windowStart);
+    if (recentRequests.length >= RATE_LIMIT) {
+      return false;
     }
+    
+    // Update timestamps
+    const putCommand = new PutCommand({
+      TableName: process.env.RATE_LIMIT_TABLE,
+      Item: {
+        id: `ratelimit_${ipAddress}`,
+        timestamps: [...recentRequests, now],
+        ttl: Math.floor((now + TIME_WINDOW) / 1000) // Auto-delete after time window
+      }
+    });
+    
+    await dynamodb.send(putCommand);
+    return true;
+  } catch (error) {
+    console.error('Rate limit check failed:', error);
+    return true; // Fail open to avoid blocking legitimate requests
   }
-  
-  const requests = requestCounts.get(ipAddress) || [];
-  
-  if (requests.length >= RATE_LIMIT) {
-    return false;
-  }
-  
-  requests.push(now);
-  requestCounts.set(ipAddress, requests);
-  return true;
 }
 
 exports.handler = async (event) => {
@@ -47,9 +63,10 @@ exports.handler = async (event) => {
         response = await getFeatureFlags(TABLE_NAME, event.path);
         break;
       case 'POST':
-        // Only apply rate limiting to POST requests
         const ipAddress = event.requestContext.identity.sourceIp;
-        if (!checkRateLimit(ipAddress)) {
+        const isAllowed = await checkRateLimit(ipAddress);
+        
+        if (!isAllowed) {
           return {
             statusCode: 429,
             headers: corsHeaders,

@@ -115,6 +115,12 @@
          ]
         },
         {
+         "Fn::GetAtt": [
+          "RateLimitTableFAD921A1",
+          "Arn"
+         ]
+        },
+        {
          "Fn::Join": [
           "",
           [
@@ -127,6 +133,9 @@
            "/index/*"
           ]
          ]
+        },
+        {
+         "Ref": "AWS::NoValue"
         }
        ]
       }
@@ -149,12 +158,15 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-550475323052-us-west-2",
-     "S3Key": "f96393576d5a19098f10232bbb6ae98aaf557f892918386418896792cc6aff9c.zip"
+     "S3Key": "2cb4c4320ee6f0d2171cf9a37b27a080c3b2a1b87fd1b7428ef839b06fc9e2dd.zip"
     },
     "Environment": {
      "Variables": {
       "TABLE_NAME": {
        "Ref": "FeatureFlagsTable00AD5587"
+      },
+      "RATE_LIMIT_TABLE": {
+       "Ref": "RateLimitTableFAD921A1"
       }
      }
     },
@@ -173,7 +185,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "FeatureFlagsApiStack/FeatureFlagsFunction/Resource",
-    "aws:asset:path": "asset.f96393576d5a19098f10232bbb6ae98aaf557f892918386418896792cc6aff9c",
+    "aws:asset:path": "asset.2cb4c4320ee6f0d2171cf9a37b27a080c3b2a1b87fd1b7428ef839b06fc9e2dd",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -187,7 +199,7 @@
     "aws:cdk:path": "FeatureFlagsApiStack/FeatureFlagsApi/Resource"
    }
   },
-  "FeatureFlagsApiDeployment386FE6390a11853dfb0d53d7244c14961b30adda": {
+  "FeatureFlagsApiDeployment386FE63909ad48b0ba699d33c017a5570409ef1b": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "Automatically created by the RestApi construct",
@@ -204,6 +216,7 @@
     "FeatureFlagsApifeatureflagslocalOPTIONSD4E42589",
     "FeatureFlagsApifeatureflagslocal3678D0DA",
     "FeatureFlagsApifeatureflagsOPTIONSB988BE2A",
+    "FeatureFlagsApifeatureflagsPOSTD290747E",
     "FeatureFlagsApifeatureflagsproj05GETB5CAC418",
     "FeatureFlagsApifeatureflagsproj05OPTIONS88752E38",
     "FeatureFlagsApifeatureflagsproj0571AE952D",
@@ -218,7 +231,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "FeatureFlagsApiDeployment386FE6390a11853dfb0d53d7244c14961b30adda"
+     "Ref": "FeatureFlagsApiDeployment386FE63909ad48b0ba699d33c017a5570409ef1b"
     },
     "RestApiId": {
      "Ref": "FeatureFlagsApi3608D08C"
@@ -748,6 +761,102 @@
     "aws:cdk:path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/GET/Resource"
    }
   },
+  "FeatureFlagsApifeatureflagsPOSTApiPermissionFeatureFlagsApiStackFeatureFlagsApiDF138C37POSTfeatureflags286402AE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "FeatureFlagsFunction742178EA",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-west-2:550475323052:",
+       {
+        "Ref": "FeatureFlagsApi3608D08C"
+       },
+       "/",
+       {
+        "Ref": "FeatureFlagsApiDeploymentStageprod23102E7A"
+       },
+       "/POST/feature-flags"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/ApiPermission.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags"
+   }
+  },
+  "FeatureFlagsApifeatureflagsPOSTApiPermissionTestFeatureFlagsApiStackFeatureFlagsApiDF138C37POSTfeatureflags7259B3CA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "FeatureFlagsFunction742178EA",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-west-2:550475323052:",
+       {
+        "Ref": "FeatureFlagsApi3608D08C"
+       },
+       "/test-invoke-stage/POST/feature-flags"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/ApiPermission.Test.FeatureFlagsApiStackFeatureFlagsApiDF138C37.POST..feature-flags"
+   }
+  },
+  "FeatureFlagsApifeatureflagsPOSTD290747E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": true,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "FeatureFlagsFunction742178EA",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "FeatureFlagsApifeatureflagsE9B1D447"
+    },
+    "RestApiId": {
+     "Ref": "FeatureFlagsApi3608D08C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FeatureFlagsApiStack/FeatureFlagsApi/Default/feature-flags/POST/Resource"
+   }
+  },
   "FeatureFlagsApifeatureflagsidDCD03147": {
    "Type": "AWS::ApiGateway::Resource",
    "Properties": {
@@ -956,6 +1065,36 @@
    },
    "Metadata": {
     "aws:cdk:path": "FeatureFlagsApiStack/FeatureFlagsApi/FeatureFlagsUsagePlan/UsagePlanKeyResource:FeatureFlagsApiStackFeatureFlagsApiFeatureFlagsApiKey323EC819"
+   }
+  },
+  "RateLimitTableFAD921A1": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     }
+    ],
+    "ProvisionedThroughput": {
+     "ReadCapacityUnits": 5,
+     "WriteCapacityUnits": 5
+    },
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "FeatureFlagsApiStack/RateLimitTable/Resource"
    }
   },
   "CDKMetadata": {
