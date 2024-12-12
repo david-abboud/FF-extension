@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Feature Flags</title>
+  <link rel="stylesheet" href="app.css">
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+</head>
+<body>
+  <div class="popup">
+    <form id="url-form" style="height: 450px;">
+      <div class="popup__header">
+        <h1 class="popup__title">Feature Flags</h1>
+        <div class="popup__toggle-all-container">
+          <button id="toggle-all" class="popup__toggle-all-button" type="button">
+            All
+          </button>
+        </div>
+        <div class="popup__search-container">
+          <input class="popup__search-field" id="search" name="search" placeholder="Search for flags">
+          <img src="icons/search.svg" alt="Search" class="popup__search-icon" id="search_submit" value="Rechercher">
+        </div>
+        <button id="refresh" class="popup__refresh-button" type="button">⟳</button>
+      </div>
+      <div class="loader-container">
+        <div class="loader"></div>
+      </div>
+        <div class="popup__checkbox-group" id="checkboxGroup">
+          <!-- handlebars code from js -->
+        </div>
+        <div class="popup__footer">
+              <div class="popup__new-flag-container">
+
+                <label for="input" class="popup__input-label">
+                  <div class="popup__switch">
+                    <input value="private" name="switch" id="type-switch" type="checkbox">
+                    <label for="type-switch">
+                      <div class="popup__switch-container">
+                        <div class="popup__switch-label">
+                          <span>SIMON</span>
+                          <span class="popup__switch-text">
+                            <span class="popup__switch-text_unchecked"><span class="popup__switch-label_hidden">Unchecked: </span>3.0</span>
+                            <span class="popup__switch-text_checked"><span class="popup__switch-label_hidden">Checked: </span>2.0</span>
+                          </span>
+                        </div>
+                        <img src="icons/swap.svg" alt="Swap" class="popup__switch-icon">
+                      </div>
+                    </label>
+                  </div>
+                </label>
+
+                <div class="popup__input-container">
+                  <input type="text" placeholder="Add a feature flag to the list" name="input" class="popup__input">
+                  <button type="button" class="popup__input-button">Add</button>
+                </div>
+
+          </div>
+          <button class="popup__apply-button">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Apply Flags
+          </button>
+        </div>
+    </form>
+  <script src="popup.js"></script>
+</body>
+</html>
