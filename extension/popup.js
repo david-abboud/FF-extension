@@ -38,6 +38,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function fetchDataFromAPI() {
+    // Show loader and hide rows
+    document.querySelectorAll('.popup__row').forEach(row => row.style.display = 'none');
+    const loader = document.querySelector('.loader-container');
+    console.log('loader', loader);
+    if (loader) loader.style.display = 'flex';
+
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tab = tabs[0];
       if (!tab || !tab.url) {
@@ -80,8 +86,14 @@ document.addEventListener('DOMContentLoaded', function () {
           console.log('Cache updated for tab:', tab.id);
         });
         populateUI(data);
+        // Hide loader after data is loaded
+        if (loader) loader.style.display = 'none';
       })
-      .catch(error => console.error('Error loading features:', error));
+      .catch(error => {
+        console.error('Error loading features:', error);
+        // Hide loader and show error state
+        if (loader) loader.style.display = 'none';
+      });
     });
   }
 
@@ -102,9 +114,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const checkboxGroup = document.getElementById('checkboxGroup');
     checkboxGroup.innerHTML = '';
     
+    // Hide loader
+    const loader = document.querySelector('.loader-container');
+    if (loader) loader.style.display = 'none';
+    
     data.forEach(feature => {
       const checkboxRow = document.createElement('div');
       checkboxRow.className = 'popup__row';
+      checkboxRow.style.display = 'flex'; // Show rows when populating
       checkboxRow.innerHTML = `
         <div class="popup__checkbox">
           <input id="${feature.id}" type="checkbox" value="${feature.value}" data-type="${feature.type}">
@@ -309,6 +326,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function addFeatureFlag(value, type) {
+    document.querySelectorAll('.popup__row').forEach(row => row.style.display = 'none');
+    document.querySelector('.loader-container').style.display = 'flex';
     fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -332,6 +351,9 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.storage.local.set({ 'cachedFeatureFlags': cachedFlags }, function() {
           console.log('Cache updated with new feature flag');
           populateUI(cachedFlags);
+
+          const checkboxGroup = document.getElementById('checkboxGroup');
+          checkboxGroup.scrollTop = checkboxGroup.scrollHeight;
         });
       });
     })
