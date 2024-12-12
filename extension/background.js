@@ -68,26 +68,26 @@ function applyFeatureFlags(tabId, url) {
   });
 }
 
-// Track the last known URL for each tab
-let lastKnownUrls = {};
-
 // Listen for tab updates
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'loading' && tab.url) {
-    const currentUrl = new URL(tab.url);
-    const lastUrl = lastKnownUrls[tabId] ? new URL(lastKnownUrls[tabId]) : null;
+    // Get last known URL from storage
+    chrome.storage.local.get(`lastKnownUrl_${tabId}`, (result) => {
+      const lastUrl = result[`lastKnownUrl_${tabId}`] ? new URL(result[`lastKnownUrl_${tabId}`]) : null;
+      const currentUrl = new URL(tab.url);
 
-    // Check if this is likely a server rebuild
-    if (lastUrl && 
-        currentUrl.origin === lastUrl.origin && 
-        currentUrl.pathname === lastUrl.pathname &&
-        !currentUrl.searchParams.get('features')) {
-      console.log('Possible server rebuild detected:', tabId, tab.url);
-      applyFeatureFlags(tabId, tab.url);
-    }
+      // Check if this is likely a server rebuild
+      if (lastUrl && 
+          currentUrl.origin === lastUrl.origin && 
+          currentUrl.pathname === lastUrl.pathname &&
+          !currentUrl.searchParams.get('features')) {
+        console.log('Possible server rebuild detected:', tabId, tab.url);
+        applyFeatureFlags(tabId, tab.url);
+      }
 
-    // Update the last known URL
-    lastKnownUrls[tabId] = tab.url;
+      // Update the last known URL in storage
+      chrome.storage.local.set({ [`lastKnownUrl_${tabId}`]: tab.url });
+    });
   }
 });
 
@@ -104,7 +104,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Clean up lastKnownUrls when a tab is closed
+// Clean up storage when a tab is closed
 chrome.tabs.onRemoved.addListener((tabId) => {
-  delete lastKnownUrls[tabId];
+  chrome.storage.local.remove(`lastKnownUrl_${tabId}`);
 });
