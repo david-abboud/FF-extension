@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-  const apiUrl = 'https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags';
-  const apiKey = 'fAIBArMf3S3tjIEpgElE14zOksOmV9en1M5LO6rX';
+  const apiUrl = CONFIG.apiUrl;
+  const apiKey = CONFIG.apiKey;
 
   // Function to check if cache is stale
   function isCacheStale(lastFetchTime) {
