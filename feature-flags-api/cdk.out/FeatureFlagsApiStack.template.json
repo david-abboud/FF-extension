@@ -158,7 +158,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-550475323052-us-west-2",
-     "S3Key": "2cb4c4320ee6f0d2171cf9a37b27a080c3b2a1b87fd1b7428ef839b06fc9e2dd.zip"
+     "S3Key": "f4c96d4661cdcf0df74babb5e80160a2156c316625387cb625981dd044136948.zip"
     },
     "Environment": {
      "Variables": {
@@ -185,7 +185,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "FeatureFlagsApiStack/FeatureFlagsFunction/Resource",
-    "aws:asset:path": "asset.2cb4c4320ee6f0d2171cf9a37b27a080c3b2a1b87fd1b7428ef839b06fc9e2dd",
+    "aws:asset:path": "asset.f4c96d4661cdcf0df74babb5e80160a2156c316625387cb625981dd044136948",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }

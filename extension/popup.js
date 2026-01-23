@@ -54,16 +54,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const currentUrl = new URL(tab.url);
       let endpoint = apiUrl;  // Default endpoint for all flags
 
-      // More specific URL matching
-      if (currentUrl.hostname === 'localhost') {
-        endpoint = `${apiUrl}/local`;
-        console.log('Localhost detected, fetching local flags');
-      } else if (currentUrl.hostname === 'proj05.simon365.com') {
+      if (currentUrl.hostname === 'proj05.simon365.com' && currentUrl.pathname === '/bsistaff.aspx') {
         endpoint = `${apiUrl}/proj05`;
-        console.log('Proj05 detected, fetching proj05 flags');
       } else {
-        console.log('Other domain detected, fetching all flags');
+        endpoint = `${apiUrl}/local`;
       }
+
 
       fetch(endpoint, {
         method: 'GET',
@@ -79,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         console.log('Fetched fresh data from API for tab:', tab.id, 'Endpoint:', endpoint);
         const cacheKey = getCacheKey(tab.id);
-        chrome.storage.local.set({ 
+        chrome.storage.local.set({
           [cacheKey.flags]: data,
           [cacheKey.time]: Date.now()
         }, function() {
@@ -113,11 +109,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function populateUI(data) {
     const checkboxGroup = document.getElementById('checkboxGroup');
     checkboxGroup.innerHTML = '';
-    
+
     // Hide loader
     const loader = document.querySelector('.loader-container');
     if (loader) loader.style.display = 'none';
-    
+
     data.forEach(feature => {
       const checkboxRow = document.createElement('div');
       checkboxRow.className = 'popup__row';
@@ -141,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
       `;
       checkboxGroup.appendChild(checkboxRow);
     });
-    
+
     setupPinButtonListeners();
     setupPinnedItems();
     initCheckboxStates();
@@ -162,12 +158,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const url = new URL(tab.url);
       const urlFeatures = url.searchParams.get('features')?.split(',') || [];
-      
+
       chrome.storage.local.get(tab.id.toString(), function(result) {
         const storedData = result[tab.id.toString()] || {};
         const storedLocalFeatures = storedData.localFeatureFlags?.split(',') || [];
         const storedProj05Features = Object.keys(storedData.proj05FeatureFlags || {});
-        
+
         const allFeatures = new Set([...urlFeatures, ...storedLocalFeatures, ...storedProj05Features]);
 
         allFeatures.forEach(feature => {
@@ -197,11 +193,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function setupPinButtonListeners() {
     const checkboxGroup = document.getElementById("checkboxGroup");
-    
+
     // Remove existing listener if any
     const newCheckboxGroup = checkboxGroup.cloneNode(true);
     checkboxGroup.parentNode.replaceChild(newCheckboxGroup, checkboxGroup);
-    
+
     // Add single delegated listener for both pin and delete
     newCheckboxGroup.addEventListener("click", function (e) {
       // Handle pin button clicks
@@ -362,11 +358,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function deleteFeatureFlag(id) {
     const apiUrl = `https://nx49wyx7z3.execute-api.us-west-2.amazonaws.com/prod/feature-flags/${id}`;
-    
+
     let pinnedItems = JSON.parse(localStorage.getItem("pinnedItems")) || [];
     pinnedItems = pinnedItems.filter(item => item !== id);
     localStorage.setItem("pinnedItems", JSON.stringify(pinnedItems));
-    
+
     fetch(apiUrl, {
       method: 'DELETE',
       headers: {

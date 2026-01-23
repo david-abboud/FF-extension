@@ -5,7 +5,7 @@ const client = new DynamoDBClient({});
 const dynamodb = DynamoDBDocumentClient.from(client);
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'chrome-extension://cgpijpjnpkaolmnmlgbimmjhgfapfjcj',
+  'Access-Control-Allow-Origin': '*',  // Allow all origins including any Chrome extension
   'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent',
   'Access-Control-Allow-Methods': 'OPTIONS,GET,PUT,POST,DELETE'
 };
@@ -17,7 +17,7 @@ const TIME_WINDOW = 60000; // 1 minute
 async function checkRateLimit(ipAddress) {
   const now = Date.now();
   const windowStart = now - TIME_WINDOW;
-  
+
   try {
     const getCommand = new GetCommand({
       TableName: process.env.RATE_LIMIT_TABLE,
@@ -25,16 +25,16 @@ async function checkRateLimit(ipAddress) {
         id: `ratelimit_${ipAddress}`
       }
     });
-    
+
     const result = await dynamodb.send(getCommand);
     const requests = result.Item?.timestamps || [];
-    
+
     // Clean old timestamps and check limit
     const recentRequests = requests.filter(time => time > windowStart);
     if (recentRequests.length >= RATE_LIMIT) {
       return false;
     }
-    
+
     // Update timestamps
     const putCommand = new PutCommand({
       TableName: process.env.RATE_LIMIT_TABLE,
@@ -44,7 +44,7 @@ async function checkRateLimit(ipAddress) {
         ttl: Math.floor((now + TIME_WINDOW) / 1000) // Auto-delete after time window
       }
     });
-    
+
     await dynamodb.send(putCommand);
     return true;
   } catch (error) {
@@ -65,7 +65,7 @@ exports.handler = async (event) => {
       case 'POST':
         const ipAddress = event.requestContext.identity.sourceIp;
         const isAllowed = await checkRateLimit(ipAddress);
-        
+
         if (!isAllowed) {
           return {
             statusCode: 429,
@@ -211,7 +211,7 @@ async function getNextId(tableName) {
     ProjectionExpression: 'id',
   });
   const result = await dynamodb.send(command);
-  
+
   let maxNumber = 0;
   result.Items.forEach(item => {
     const num = parseInt(item.id.slice(3), 10);
